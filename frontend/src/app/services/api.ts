@@ -1,5 +1,8 @@
 // src/app/services/api.ts
-const API_BASE = 'http://localhost:5000/api';
+const isDev = typeof window !== 'undefined' &&
+              (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const API_BASE = isDev ? 'http://localhost:5000/api' : 'https://api.k-europe.com';
 
 export async function getProducts(category?: string) {
   const params = new URLSearchParams();
