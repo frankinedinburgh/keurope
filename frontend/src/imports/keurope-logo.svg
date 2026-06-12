@@ -1,0 +1,51 @@
+<svg width="240" height="70" viewBox="0 0 240 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- K + Euro hybrid symbol -->
+  <g>
+    <!-- Left vertical stroke -->
+    <path d="M 10 15 L 10 55 L 18 55 L 18 15 Z" fill="currentColor"/>
+
+    <!-- Right side - C curve (euro-like) opening to the right -->
+    <path d="M 18 35 Q 18 20 28 15 Q 35 12 40 15 L 38 20 Q 34 18 30 20 Q 22 24 22 35 Q 22 46 30 50 Q 34 52 38 50 L 40 55 Q 35 58 28 55 Q 18 50 18 35" fill="currentColor"/>
+
+    <!-- Two horizontal lines through the curve (euro symbol feature) -->
+    <rect x="10" y="30" width="25" height="2.5" fill="currentColor"/>
+    <rect x="10" y="37" width="25" height="2.5" fill="currentColor"/>
+  </g>
+
+  <!-- Dotted arc above "urope" -->
+  <circle cx="55" cy="12" r="2.2" fill="currentColor"/>
+  <circle cx="67" cy="8" r="2.2" fill="currentColor"/>
+  <circle cx="80" cy="6" r="2.2" fill="currentColor"/>
+  <circle cx="93" cy="5" r="2.2" fill="currentColor"/>
+  <circle cx="106" cy="5" r="2.2" fill="currentColor"/>
+  <circle cx="119" cy="6" r="2.2" fill="currentColor"/>
+  <circle cx="132" cy="8" r="2.2" fill="currentColor"/>
+  <circle cx="144" cy="12" r="2.2" fill="currentColor"/>
+
+  <!-- "urope" text in casual handwritten style -->
+  <g transform="translate(50, 38)">
+    <!-- u -->
+    <path d="M 0 -2 L 0 5 Q 0 9 4 9 Q 8 9 8 5 L 8 -2"
+          stroke="currentColor" stroke-width="3" fill="none"
+          stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- R (uppercase casual style) -->
+    <path d="M 18 9 L 18 -2 L 24 -2 Q 28 -2 28 2 Q 28 5 26 5.5 L 29 9 M 18 4 L 24 4"
+          stroke="currentColor" stroke-width="3" fill="none"
+          stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- o -->
+    <ellipse cx="42" cy="3.5" rx="6" ry="6.5"
+             stroke="currentColor" stroke-width="3" fill="none"/>
+
+    <!-- p -->
+    <path d="M 54 -2 L 54 16 M 54 -2 Q 54 -2 60 -2 Q 66 -2 66 3 Q 66 9 60 9 Q 54 9 54 9"
+          stroke="currentColor" stroke-width="3" fill="none"
+          stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- e -->
+    <path d="M 76 6 L 86 6 Q 86 2 82 -2 Q 78 -2 76 1 Q 74 4 76 8 Q 78 10 82 10 Q 84 10 86 8"
+          stroke="currentColor" stroke-width="3" fill="none"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

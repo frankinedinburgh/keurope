@@ -1,0 +1,93 @@
+package main
+
+import (
+	"database/sql"
+	"fmt"
+
+	_ "github.com/mattn/go-sqlite3"
+)
+
+var db *sql.DB
+
+func initDatabase() error {
+	var err error
+	db, err = sql.Open("sqlite3", "./keurope.db")
+	if err != nil {
+		return fmt.Errorf("failed to open database: %w", err)
+	}
+
+	// Test connection
+	err = db.Ping()
+	if err != nil {
+		return fmt.Errorf("failed to ping database: %w", err)
+	}
+
+	fmt.Println("✅ Database connected")
+	return nil
+}
+
+func getProductsFromDB(category string) ([]Product, error) {
+	var query string
+	var args []interface{}
+
+	if category != "" {
+		query = "SELECT id, title, price, category, image_url FROM products WHERE category = ? ORDER BY id"
+		args = append(args, category)
+	} else {
+		query = "SELECT id, title, price, category, image_url FROM products ORDER BY id"
+	}
+
+	rows, err := db.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("query error: %w", err)
+	}
+	defer rows.Close()
+
+	var products []Product
+	for rows.Next() {
+		var p Product
+		err := rows.Scan(&p.ID, &p.Title, &p.Price, &p.Category, &p.ImageURL)
+		if err != nil {
+			return nil, fmt.Errorf("scan error: %w", err)
+		}
+		products = append(products, p)
+	}
+
+	return products, nil
+}
+
+func getProductByIDFromDB(id string) (*Product, error) {
+	query := "SELECT id, title, price, category, image_url FROM products WHERE id = ?"
+	var p Product
+
+	err := db.QueryRow(query, id).Scan(&p.ID, &p.Title, &p.Price, &p.Category, &p.ImageURL)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("query error: %w", err)
+	}
+
+	return &p, nil
+}
+
+func getCategoriesFromDB() ([]string, error) {
+	query := "SELECT DISTINCT category FROM products ORDER BY category"
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("query error: %w", err)
+	}
+	defer rows.Close()
+
+	var categories []string
+	for rows.Next() {
+		var category string
+		err := rows.Scan(&category)
+		if err != nil {
+			return nil, fmt.Errorf("scan error: %w", err)
+		}
+		categories = append(categories, category)
+	}
+
+	return categories, nil
+}
