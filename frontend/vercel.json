@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "env": {
+    "VITE_API_BASE": "@vite_api_base"
+  },
+  "domains": ["k-europe.com", "www.k-europe.com"]
+}
