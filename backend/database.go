@@ -4,14 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 var db *sql.DB
 
 func initDatabase() error {
 	var err error
-	db, err = sql.Open("sqlite3", "./keurope.db")
+	db, err = sql.Open("sqlite", "./keurope.db")
 	if err != nil {
 		return fmt.Errorf("failed to open database: %w", err)
 	}
