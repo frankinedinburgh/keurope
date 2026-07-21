@@ -12,10 +12,16 @@ export function Shop() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Update selectedCategory when URL parameter changes
+  useEffect(() => {
+    setSelectedCategory(categoryParam || 'All');
+  }, [categoryParam]);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
+        // Always fetch ALL products to show all category options
         const data = await getProducts();
         setAllProducts(data);
         setError(null);

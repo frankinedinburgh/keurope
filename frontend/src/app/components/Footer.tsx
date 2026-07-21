@@ -51,19 +51,19 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-black transition-colors">
+                <Link to="/contact" className="hover:text-black transition-colors">
                   Contact
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-black transition-colors">
+                <Link to="/shipping" className="hover:text-black transition-colors">
                   Shipping
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-black transition-colors">
+                <Link to="/returns" className="hover:text-black transition-colors">
                   Returns
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

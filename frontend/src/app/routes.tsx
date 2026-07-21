@@ -6,6 +6,9 @@ import { ProductDetail } from './pages/ProductDetail';
 import { Cart } from './pages/Cart';
 import { Checkout } from './pages/Checkout';
 import { About } from './pages/About';
+import { Contact } from './pages/Contact';
+import { Shipping } from './pages/Shipping';
+import { Returns } from './pages/Returns';
 import { LogoPreview } from './pages/LogoPreview';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
@@ -43,6 +46,9 @@ export const router = createBrowserRouter([
         ),
       },
       { path: 'about', Component: About },
+      { path: 'contact', Component: Contact },
+      { path: 'shipping', Component: Shipping },
+      { path: 'returns', Component: Returns },
       { path: 'logo-preview', Component: LogoPreview },
       { path: '*', Component: NotFound },
     ],
