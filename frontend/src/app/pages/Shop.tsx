@@ -72,9 +72,9 @@ export function Shop() {
 
   return (
     <div className="min-h-screen">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 md:py-12">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6 md:mb-8">
           <h1 className="text-2xl md:text-4xl mb-2">Shop All</h1>
           <p className="text-sm md:text-base text-neutral-600">
             {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
