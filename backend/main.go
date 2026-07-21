@@ -43,6 +43,7 @@ func main() {
 
 	// Product routes (public)
 	router.HandleFunc("/api/products", getProducts).Methods("GET")
+	router.HandleFunc("/api/products", createProduct).Methods("POST")
 	router.HandleFunc("/api/products/{id}", getProduct).Methods("GET")
 	router.HandleFunc("/api/categories", getCategories).Methods("GET")
 

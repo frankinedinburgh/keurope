@@ -102,3 +102,60 @@ func getCategories(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(response)
 }
+
+func createProduct(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var req struct {
+		Title       string  `json:"title"`
+		Price       float64 `json:"price"`
+		Category    string  `json:"category"`
+		Description string  `json:"description"`
+		ImageURL    string  `json:"image_url"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "INVALID_REQUEST",
+				Message: "Invalid request body",
+			},
+		})
+		return
+	}
+
+	if req.Title == "" || req.Price <= 0 || req.Category == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "INVALID_REQUEST",
+				Message: "Title, price, and category are required",
+			},
+		})
+		return
+	}
+
+	product, err := createProductInDB(req.Title, req.Price, req.Category, req.Description, req.ImageURL)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "DATABASE_ERROR",
+				Message: err.Error(),
+			},
+		})
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	response := ApiResponse{
+		Status: "success",
+		Data:   product,
+	}
+	json.NewEncoder(w).Encode(response)
+}

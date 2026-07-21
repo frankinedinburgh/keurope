@@ -9,6 +9,9 @@ import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Shipping } from './pages/Shipping';
 import { Returns } from './pages/Returns';
+import { AdminLogin } from './pages/AdminLogin';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { AddProduct } from './pages/AddProduct';
 import { LogoPreview } from './pages/LogoPreview';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
@@ -29,6 +32,9 @@ export const router = createBrowserRouter([
       { path: 'register', Component: Register },
       { path: 'forgot-password', Component: ForgotPassword },
       { path: 'reset-password', Component: ResetPassword },
+      { path: 'admin/login', Component: AdminLogin },
+      { path: 'admin/dashboard', Component: AdminDashboard },
+      { path: 'admin/add-product', Component: AddProduct },
       {
         path: 'cart',
         Component: () => (

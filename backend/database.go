@@ -105,6 +105,32 @@ func getCategoriesFromDB() ([]string, error) {
 	return categories, nil
 }
 
+func createProductInDB(title string, price float64, category string, description string, imageURL string) (*Product, error) {
+	// Generate a new ID (simple numeric approach - in production, use UUID)
+	var maxID int
+	err := db.QueryRow("SELECT COALESCE(MAX(CAST(id AS INTEGER)), 0) FROM products WHERE id REGEXP '^[0-9]+$'").Scan(&maxID)
+	if err != nil {
+		// If query fails, start from a high number to avoid conflicts
+		maxID = 1000
+	}
+	newID := fmt.Sprintf("%d", maxID+1)
+
+	query := "INSERT INTO products (id, title, price, category, image_url, description) VALUES (?, ?, ?, ?, ?, ?)"
+	_, err = db.Exec(query, newID, title, price, category, imageURL, description)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create product: %w", err)
+	}
+
+	return &Product{
+		ID:          newID,
+		Title:       title,
+		Price:       price,
+		Category:    category,
+		ImageURL:    imageURL,
+		Description: description,
+	}, nil
+}
+
 func createTables() error {
 	productsQuery := `
 	CREATE TABLE IF NOT EXISTS products (
@@ -112,7 +138,8 @@ func createTables() error {
 		title TEXT NOT NULL,
 		price REAL NOT NULL,
 		category TEXT,
-		image_url TEXT
+		image_url TEXT,
+		description TEXT
 	)
 	`
 	_, err := db.Exec(productsQuery)
