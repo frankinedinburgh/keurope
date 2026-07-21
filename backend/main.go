@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
@@ -41,8 +42,14 @@ func main() {
 	// Apply CORS middleware to all routes
 	handler := corsMiddleware(router)
 
-	fmt.Println("🚀 Keurope Go API running on http://localhost:5000")
-	fmt.Println("Try: curl http://localhost:5000/api/products")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "5000"
+	}
 
-	http.ListenAndServe(":5000", handler)
+	fmt.Printf("🚀 Keurope Go API running on http://localhost:%s\n", port)
+	fmt.Printf("Try: curl http://localhost:%s/api/products\n", port)
+
+	http.ListenAndServe(":" + port, handler)
+
 }
