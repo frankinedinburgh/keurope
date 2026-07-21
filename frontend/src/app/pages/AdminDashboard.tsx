@@ -40,7 +40,10 @@ export function AdminDashboard() {
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
       try {
-        const response = await fetch(`/api/products/${id}`, {
+        const API_BASE = process.env.NODE_ENV === 'development'
+          ? 'http://localhost:5000/api'
+          : 'https://api.k-europe.com/api';
+        const response = await fetch(`${API_BASE}/products/${id}`, {
           method: 'DELETE',
         });
         if (response.ok) {

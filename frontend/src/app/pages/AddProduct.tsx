@@ -15,8 +15,9 @@ export function AddProduct() {
     price: '',
     category: 'Tops',
     description: '',
-    imageUrl: '',
+    imageFile: null as File | null,
   });
+  const [imagePreview, setImagePreview] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -28,35 +29,57 @@ export function AddProduct() {
     }));
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        imageFile: file,
+      }));
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreview(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE}/products`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: formData.title,
-          price: parseFloat(formData.price),
-          category: formData.category,
-          description: formData.description,
-          image_url: formData.imageUrl,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to add product');
+      if (!formData.imageFile) {
+        throw new Error('Please select an image');
       }
 
-      // Success - go back to dashboard
-      navigate('/admin/dashboard');
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const imageBase64 = reader.result as string;
+        const response = await fetch(`${API_BASE}/products`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: formData.title,
+            price: parseFloat(formData.price),
+            category: formData.category,
+            description: formData.description,
+            image_url: imageBase64,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to add product');
+        }
+
+        navigate('/admin/dashboard');
+      };
+      reader.readAsDataURL(formData.imageFile);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add product');
-    } finally {
       setLoading(false);
     }
   };
@@ -157,27 +180,25 @@ export function AddProduct() {
               />
             </div>
 
-            {/* Image URL */}
+            {/* Image Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Image URL
+                Product Image *
               </label>
               <input
-                type="url"
-                name="imageUrl"
-                value={formData.imageUrl}
-                onChange={handleChange}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
                 className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-black focus:outline-none"
-                placeholder="https://example.com/image.jpg"
+                required
               />
-              {formData.imageUrl && (
+              {imagePreview && (
                 <div className="mt-4">
                   <p className="text-sm text-gray-600 mb-2">Preview:</p>
                   <img
-                    src={formData.imageUrl}
+                    src={imagePreview}
                     alt="Preview"
                     className="max-w-xs h-auto rounded border"
-                    onError={() => setError('Could not load image from URL')}
                   />
                 </div>
               )}
@@ -207,7 +228,7 @@ export function AddProduct() {
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
           <h3 className="font-medium text-blue-900 mb-3">Tips for adding products:</h3>
           <ul className="text-sm text-blue-800 space-y-2 ml-4">
-            <li>• Use a high-quality image URL from your photos</li>
+            <li>• Upload a high-quality product photo (JPG or PNG)</li>
             <li>• Write clear, descriptive titles (e.g., "Premium Cotton Shirt - Seoul Designer")</li>
             <li>• Include key details in the description (materials, fit, care instructions)</li>
             <li>• Set competitive prices based on quality and market</li>

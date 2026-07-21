@@ -131,6 +131,51 @@ func createProductInDB(title string, price float64, category string, description
 	}, nil
 }
 
+func updateProductInDB(id string, title string, price float64, category string, description string, imageURL string) (*Product, error) {
+	query := "UPDATE products SET title = ?, price = ?, category = ?, description = ?, image_url = ? WHERE id = ?"
+	result, err := db.Exec(query, title, price, category, description, imageURL, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update product: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("failed to check rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("product not found")
+	}
+
+	return &Product{
+		ID:          id,
+		Title:       title,
+		Price:       price,
+		Category:    category,
+		ImageURL:    imageURL,
+		Description: description,
+	}, nil
+}
+
+func deleteProductFromDB(id string) error {
+	query := "DELETE FROM products WHERE id = ?"
+	result, err := db.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete product: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("product not found")
+	}
+
+	return nil
+}
+
 func createTables() error {
 	productsQuery := `
 	CREATE TABLE IF NOT EXISTS products (

@@ -159,3 +159,90 @@ func createProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(response)
 }
+
+func updateProduct(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	var req struct {
+		Title       string  `json:"title"`
+		Price       float64 `json:"price"`
+		Category    string  `json:"category"`
+		Description string  `json:"description"`
+		ImageURL    string  `json:"image_url"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "INVALID_REQUEST",
+				Message: "Invalid request body",
+			},
+		})
+		return
+	}
+
+	if req.Title == "" || req.Price <= 0 || req.Category == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "INVALID_REQUEST",
+				Message: "Title, price, and category are required",
+			},
+		})
+		return
+	}
+
+	product, err := updateProductInDB(id, req.Title, req.Price, req.Category, req.Description, req.ImageURL)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "DATABASE_ERROR",
+				Message: err.Error(),
+			},
+		})
+		return
+	}
+
+	response := ApiResponse{
+		Status: "success",
+		Data:   product,
+	}
+	json.NewEncoder(w).Encode(response)
+}
+
+func deleteProduct(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	err := deleteProductFromDB(id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "DATABASE_ERROR",
+				Message: err.Error(),
+			},
+		})
+		return
+	}
+
+	response := ApiResponse{
+		Status: "success",
+		Data: map[string]string{
+			"message": "Product deleted successfully",
+		},
+	}
+	json.NewEncoder(w).Encode(response)
+}

@@ -45,6 +45,8 @@ func main() {
 	router.HandleFunc("/api/products", getProducts).Methods("GET")
 	router.HandleFunc("/api/products", createProduct).Methods("POST")
 	router.HandleFunc("/api/products/{id}", getProduct).Methods("GET")
+	router.HandleFunc("/api/products/{id}", updateProduct).Methods("PUT")
+	router.HandleFunc("/api/products/{id}", deleteProduct).Methods("DELETE")
 	router.HandleFunc("/api/categories", getCategories).Methods("GET")
 
 	// Cart routes (protected)

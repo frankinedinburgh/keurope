@@ -12,6 +12,7 @@ import { Returns } from './pages/Returns';
 import { AdminLogin } from './pages/AdminLogin';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AddProduct } from './pages/AddProduct';
+import { EditProduct } from './pages/EditProduct';
 import { LogoPreview } from './pages/LogoPreview';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
@@ -35,6 +36,7 @@ export const router = createBrowserRouter([
       { path: 'admin/login', Component: AdminLogin },
       { path: 'admin/dashboard', Component: AdminDashboard },
       { path: 'admin/add-product', Component: AddProduct },
+      { path: 'admin/edit-product/:id', Component: EditProduct },
       {
         path: 'cart',
         Component: () => (
