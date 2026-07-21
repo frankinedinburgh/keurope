@@ -1,11 +1,12 @@
 package main
 
 type Product struct {
-	ID       string  `json:"id"`
-	Title    string  `json:"title"`
-	Price    float64 `json:"price"`
-	Category string  `json:"category"`
-	ImageURL string  `json:"image_url,omitempty"`
+	ID          string  `json:"id"`
+	Title       string  `json:"title"`
+	Price       float64 `json:"price"`
+	Category    string  `json:"category"`
+	ImageURL    string  `json:"image_url,omitempty"`
+	Description string  `json:"description,omitempty"`
 }
 
 type ApiResponse struct {

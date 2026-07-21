@@ -28,18 +28,20 @@ export function About() {
             <h2 className="text-3xl mb-6">Our Story</h2>
             <div className="space-y-4 text-neutral-600">
               <p>
-                keurope was born from a simple observation: Korean fashion's innovative 
-                designs and quality craftsmanship deserved a dedicated platform in Europe.
+                K-Europe was founded by a Korean designer with a passion for connecting
+                authentic Korean fashion to European women who appreciate quality and craftsmanship.
               </p>
               <p>
-                Based in Ireland with deep ties to Seoul's fashion community, we curate 
-                collections that blend the best of both worlds. Each piece is selected 
-                for its quality, design, and ability to transcend cultural boundaries.
+                Living in Ireland with direct connections to Seoul's most innovative designers,
+                she recognized an untapped opportunity: European women in their 30s and 40s were
+                hungry for sophisticated, timeless pieces—not fast fashion, but investment pieces
+                that tell a story.
               </p>
               <p>
-                Our founder, with Korean heritage and European upbringing, saw an 
-                opportunity to share the sophisticated minimalism and contemporary 
-                aesthetics of Korean fashion with European fashion enthusiasts.
+                Rather than mass-market collections, we work directly with select Korean
+                designers we know personally. This isn't a typical retail model—it's a
+                curator's passion project, built on genuine relationships and a shared
+                belief in quality over quantity.
               </p>
             </div>
           </div>

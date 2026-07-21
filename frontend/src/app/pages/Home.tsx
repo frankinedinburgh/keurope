@@ -35,16 +35,16 @@ export function Home() {
         
         <div className="relative z-10 text-center text-white px-4">
           <h1 className="text-5xl md:text-7xl mb-6 tracking-tight">
-            Korean Fashion,<br />European Spirit
+            Authentic Korean Fashion<br />For The Discerning Woman
           </h1>
           <p className="text-lg md:text-xl mb-8 text-white/90">
-            Discover curated collections from Seoul's finest designers
+            Handpicked designer collections from Seoul, curated for European elegance
           </p>
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 bg-white text-black px-8 py-3 hover:bg-neutral-100 transition-colors"
+            className="inline-flex items-center gap-2 bg-white text-black px-8 py-3 hover:bg-neutral-100 transition-colors font-medium"
           >
-            Shop Collection
+            Explore Collection
             <ArrowRight className="size-4" />
           </Link>
         </div>
@@ -89,17 +89,17 @@ export function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl mb-6">
-                Where Seoul Meets Europe
+                Direct From Seoul To Your Wardrobe
               </h2>
               <p className="text-neutral-600 mb-6">
-                Based in Ireland with deep connections to Korean fashion designers, 
-                keurope brings you the best of contemporary Korean fashion. Each piece 
-                is carefully selected to blend Seoul's innovative design philosophy 
-                with European sensibility.
+                K-Europe was founded by someone with deep roots in Korean fashion and a passion for European style.
+                We work directly with independent Korean designers to bring you pieces that embody Seoul's
+                minimalist elegance and impeccable craftsmanship.
               </p>
               <p className="text-neutral-600 mb-8">
-                We believe in quality over quantity, timeless style over fleeting trends, 
-                and the power of fashion to connect cultures.
+                Every item in our collection is personally curated for women who value quality,
+                timeless design, and the confidence that comes from wearing something truly special.
+                We don't follow trends—we create them.
               </p>
               <Link
                 to="/about"
@@ -122,23 +122,27 @@ export function Home() {
 
       {/* Values */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+        <h2 className="text-3xl mb-12">Why K-Europe</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div>
-            <h3 className="text-xl mb-4">Premium Quality</h3>
+            <h3 className="text-xl mb-4 font-medium">Authentic Korean Designers</h3>
             <p className="text-neutral-600">
-              Every piece is crafted from the finest materials, ensuring longevity and comfort.
+              We partner directly with independent Korean fashion designers, bringing you pieces
+              that haven't been mass-produced or diluted for commercial markets.
             </p>
           </div>
           <div>
-            <h3 className="text-xl mb-4">Direct From Designers</h3>
+            <h3 className="text-xl mb-4 font-medium">Uncompromising Quality</h3>
             <p className="text-neutral-600">
-              Our connections in Korea mean you get authentic designs straight from Seoul's studios.
+              Premium fabrics, meticulous construction, and attention to detail that reflects
+              Seoul's reputation for design excellence.
             </p>
           </div>
           <div>
-            <h3 className="text-xl mb-4">European Delivery</h3>
+            <h3 className="text-xl mb-4 font-medium">Curated for You</h3>
             <p className="text-neutral-600">
-              Fast, reliable shipping across Europe from our Irish base.
+              Every collection is thoughtfully selected for women who appreciate elegance,
+              quality, and pieces that transcend seasonal trends.
             </p>
           </div>
         </div>
