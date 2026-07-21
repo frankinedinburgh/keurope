@@ -115,6 +115,8 @@ export function AdminDashboard() {
                         <img
                           src={product.image_url}
                           alt={product.title}
+                          loading="lazy"
+                          decoding="async"
                           className="w-12 h-12 object-cover rounded"
                         />
                       )}
