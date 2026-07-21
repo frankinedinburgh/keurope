@@ -133,6 +133,23 @@ func createTables() error {
 		return fmt.Errorf("failed to create users table: %w", err)
 	}
 
+	cartQuery := `
+	CREATE TABLE IF NOT EXISTS carts (
+		id TEXT PRIMARY KEY,
+		user_id TEXT NOT NULL,
+		product_id TEXT NOT NULL,
+		quantity INTEGER NOT NULL DEFAULT 1,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (user_id) REFERENCES users(id),
+		FOREIGN KEY (product_id) REFERENCES products(id),
+		UNIQUE(user_id, product_id)
+	)
+	`
+	_, err = db.Exec(cartQuery)
+	if err != nil {
+		return fmt.Errorf("failed to create carts table: %w", err)
+	}
+
 	return nil
 }
 
