@@ -34,7 +34,12 @@ func main() {
 
 	router := mux.NewRouter()
 
-	// Routes
+	// Auth routes (public)
+	router.HandleFunc("/api/auth/register", register).Methods("POST")
+	router.HandleFunc("/api/auth/login", login).Methods("POST")
+	router.HandleFunc("/api/auth/me", getMe).Methods("GET")
+
+	// Product routes (public)
 	router.HandleFunc("/api/products", getProducts).Methods("GET")
 	router.HandleFunc("/api/products/{id}", getProduct).Methods("GET")
 	router.HandleFunc("/api/categories", getCategories).Methods("GET")

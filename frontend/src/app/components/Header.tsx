@@ -1,12 +1,20 @@
-import { Link } from 'react-router';
-import { ShoppingBag, Menu, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
+import { ShoppingBag, Menu, X, LogOut } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 import logo from '../../imports/keurope-logo.svg';
 
 export function Header() {
   const { totalItems } = useCart();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
@@ -31,7 +39,7 @@ export function Header() {
             </Link>
           </nav>
 
-          {/* Cart Icon */}
+          {/* Cart Icon & Auth */}
           <div className="flex items-center gap-4">
             <Link to="/cart" className="relative">
               <ShoppingBag className="size-5" />
@@ -41,6 +49,31 @@ export function Header() {
                 </span>
               )}
             </Link>
+
+            {/* Auth Links */}
+            <div className="hidden md:flex items-center gap-4">
+              {user ? (
+                <>
+                  <span className="text-sm text-gray-600">{user.email}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="text-sm hover:text-neutral-600 transition-colors flex items-center gap-1"
+                  >
+                    <LogOut className="size-4" />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="text-sm hover:text-neutral-600 transition-colors">
+                    Login
+                  </Link>
+                  <Link to="/register" className="text-sm font-medium text-black hover:text-gray-700 transition-colors">
+                    Register
+                  </Link>
+                </>
+              )}
+            </div>
 
             {/* Mobile Menu Button */}
             <button
@@ -69,6 +102,40 @@ export function Header() {
             >
               About
             </Link>
+            <div className="border-t pt-4 flex flex-col gap-2">
+              {user ? (
+                <>
+                  <span className="text-sm text-gray-600">{user.email}</span>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="text-sm hover:text-neutral-600 transition-colors flex items-center gap-1"
+                  >
+                    <LogOut className="size-4" />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-sm hover:text-neutral-600 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="text-sm font-medium text-black hover:text-gray-700 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
+            </div>
           </nav>
         )}
       </div>

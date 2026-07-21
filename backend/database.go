@@ -106,18 +106,34 @@ func getCategoriesFromDB() ([]string, error) {
 }
 
 func createTables() error {
-    query := `
-    CREATE TABLE IF NOT EXISTS products (
-        id TEXT PRIMARY KEY,
-        title TEXT NOT NULL,
-        price REAL NOT NULL,
-        category TEXT,
-        image_url TEXT
-    )
-    `
-    // TODO: Execute the query
-	db.Exec(query)
-    return nil
+	productsQuery := `
+	CREATE TABLE IF NOT EXISTS products (
+		id TEXT PRIMARY KEY,
+		title TEXT NOT NULL,
+		price REAL NOT NULL,
+		category TEXT,
+		image_url TEXT
+	)
+	`
+	_, err := db.Exec(productsQuery)
+	if err != nil {
+		return fmt.Errorf("failed to create products table: %w", err)
+	}
+
+	usersQuery := `
+	CREATE TABLE IF NOT EXISTS users (
+		id TEXT PRIMARY KEY,
+		email TEXT UNIQUE NOT NULL,
+		password_hash TEXT NOT NULL,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	)
+	`
+	_, err = db.Exec(usersQuery)
+	if err != nil {
+		return fmt.Errorf("failed to create users table: %w", err)
+	}
+
+	return nil
 }
 
 
