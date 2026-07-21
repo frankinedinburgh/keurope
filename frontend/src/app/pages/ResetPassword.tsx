@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
-
-const API_BASE = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:5000/api'
-  : 'https://api.k-europe.com/api';
+import { API_BASE } from '../config/api';
 
 const validatePassword = (password: string): string[] => {
   const errors: string[] = [];

@@ -1,9 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-
-const API_BASE = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:5000/api'
-  : 'https://api.k-europe.com/api';
+import { API_BASE } from '../config/api';
 
 export interface Product {
   id: string;

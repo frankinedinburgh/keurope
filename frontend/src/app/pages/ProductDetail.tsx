@@ -4,10 +4,7 @@ import { ArrowLeft, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { Product } from '../context/CartContext';
-
-const API_BASE = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:5000/api'
-  : 'https://api.k-europe.com/api';
+import { API_BASE } from '../config/api';
 
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
