@@ -22,6 +22,19 @@ func initDatabase() error {
 		return fmt.Errorf("failed to ping database: %w", err)
 	}
 
+	// Create tables if they don't exist
+	err = createTables()
+	if err != nil {
+		return fmt.Errorf("failed to create tables: %w", err)
+	}
+
+	// Seed initial data if needed
+	err = seedData()
+	if err != nil {
+		return fmt.Errorf("failed to seed data: %w", err)
+	}
+
+
 	fmt.Println("✅ Database connected")
 	return nil
 }
@@ -91,3 +104,47 @@ func getCategoriesFromDB() ([]string, error) {
 
 	return categories, nil
 }
+
+func createTables() error {
+    query := `
+    CREATE TABLE IF NOT EXISTS products (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        price REAL NOT NULL,
+        category TEXT,
+        image_url TEXT
+    )
+    `
+    // TODO: Execute the query
+	db.Exec(query)
+    return nil
+}
+
+
+func seedData() error {
+    // Check if products table already has data
+    var count int
+    err := db.QueryRow("SELECT COUNT(*) FROM products").Scan(&count)
+    if err != nil {
+        return fmt.Errorf("failed to check products: %w", err)
+    }
+    
+    // If products already exist, don't seed again
+    if count > 0 {
+        return nil
+    }
+    
+    // Insert initial products
+    for _, product := range products {  // Use the mock products from data.go
+        _, err := db.Exec(
+            "INSERT INTO products (id, title, price, category, image_url) VALUES (?, ?, ?, ?, ?)",
+            product.ID, product.Title, product.Price, product.Category, product.ImageURL,
+        )
+        if err != nil {
+            return fmt.Errorf("failed to insert product: %w", err)
+        }
+    }
+    
+    return nil
+}
+
