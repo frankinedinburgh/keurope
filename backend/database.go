@@ -150,6 +150,21 @@ func createTables() error {
 		return fmt.Errorf("failed to create carts table: %w", err)
 	}
 
+	passwordResetQuery := `
+	CREATE TABLE IF NOT EXISTS password_reset_tokens (
+		id TEXT PRIMARY KEY,
+		user_id TEXT NOT NULL,
+		token TEXT UNIQUE NOT NULL,
+		expires_at DATETIME NOT NULL,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (user_id) REFERENCES users(id)
+	)
+	`
+	_, err = db.Exec(passwordResetQuery)
+	if err != nil {
+		return fmt.Errorf("failed to create password_reset_tokens table: %w", err)
+	}
+
 	return nil
 }
 

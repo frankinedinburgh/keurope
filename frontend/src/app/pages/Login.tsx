@@ -71,6 +71,12 @@ export function Login() {
             </div>
           </div>
 
+          <div className="flex items-center justify-between text-sm">
+            <Link to="/forgot-password" className="font-medium text-black hover:underline">
+              Forgot password?
+            </Link>
+          </div>
+
           <button
             type="submit"
             disabled={loading}

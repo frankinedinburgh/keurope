@@ -180,3 +180,85 @@ func authMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+type ForgotPasswordRequest struct {
+	Email string `json:"email"`
+}
+
+type ForgotPasswordResponse struct {
+	Message string `json:"message"`
+	Token   string `json:"token"`
+}
+
+type ResetPasswordRequest struct {
+	Token       string `json:"token"`
+	NewPassword string `json:"new_password"`
+}
+
+func forgotPassword(w http.ResponseWriter, r *http.Request) {
+	var req ForgotPasswordRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
+
+	if req.Email == "" {
+		http.Error(w, "Email required", http.StatusBadRequest)
+		return
+	}
+
+	user, _, err := getUserByEmail(req.Email)
+	if err != nil {
+		// Don't reveal if email exists (security best practice)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(ForgotPasswordResponse{
+			Message: "If an account with this email exists, a reset token has been sent",
+		})
+		return
+	}
+
+	token, err := generateResetToken(user.ID)
+	if err != nil {
+		http.Error(w, "Failed to generate reset token", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(ForgotPasswordResponse{
+		Message: "Reset token generated. In production, this would be sent via email.",
+		Token:   token,
+	})
+}
+
+func resetPassword(w http.ResponseWriter, r *http.Request) {
+	var req ResetPasswordRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
+
+	if req.Token == "" || req.NewPassword == "" {
+		http.Error(w, "Token and new password required", http.StatusBadRequest)
+		return
+	}
+
+	userID, err := validateResetToken(req.Token)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	err = updatePassword(userID, req.NewPassword)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"status":  "success",
+		"message": "Password has been reset successfully",
+	})
+}

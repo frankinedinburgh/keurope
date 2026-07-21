@@ -38,6 +38,8 @@ func main() {
 	router.HandleFunc("/api/auth/register", register).Methods("POST")
 	router.HandleFunc("/api/auth/login", login).Methods("POST")
 	router.HandleFunc("/api/auth/me", getMe).Methods("GET")
+	router.HandleFunc("/api/auth/forgot-password", forgotPassword).Methods("POST")
+	router.HandleFunc("/api/auth/reset-password", resetPassword).Methods("POST")
 
 	// Product routes (public)
 	router.HandleFunc("/api/products", getProducts).Methods("GET")

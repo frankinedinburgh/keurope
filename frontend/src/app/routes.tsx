@@ -9,6 +9,8 @@ import { About } from './pages/About';
 import { LogoPreview } from './pages/LogoPreview';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { ForgotPassword } from './pages/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword';
 import { NotFound } from './pages/NotFound';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -22,6 +24,8 @@ export const router = createBrowserRouter([
       { path: 'product/:id', Component: ProductDetail },
       { path: 'login', Component: Login },
       { path: 'register', Component: Register },
+      { path: 'forgot-password', Component: ForgotPassword },
+      { path: 'reset-password', Component: ResetPassword },
       {
         path: 'cart',
         Component: () => (

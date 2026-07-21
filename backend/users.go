@@ -2,8 +2,10 @@ package main
 
 import (
 	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"regexp"
+	"time"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -97,4 +99,59 @@ func getUserByID(id string) (*User, error) {
 	}
 
 	return &user, nil
+}
+
+func generateResetToken(userID string) (string, error) {
+	// Generate random token
+	tokenBytes := make([]byte, 32)
+	if _, err := rand.Read(tokenBytes); err != nil {
+		return "", fmt.Errorf("failed to generate token: %w", err)
+	}
+	token := hex.EncodeToString(tokenBytes)
+
+	// Store token with 1 hour expiry
+	id := generateID()
+	expiresAt := time.Now().Add(1 * time.Hour)
+	query := "INSERT INTO password_reset_tokens (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)"
+	_, err := db.Exec(query, id, userID, token, expiresAt)
+	if err != nil {
+		return "", fmt.Errorf("failed to store reset token: %w", err)
+	}
+
+	return token, nil
+}
+
+func validateResetToken(token string) (string, error) {
+	query := "SELECT user_id FROM password_reset_tokens WHERE token = ? AND expires_at > datetime('now')"
+	var userID string
+
+	err := db.QueryRow(query, token).Scan(&userID)
+	if err != nil {
+		return "", fmt.Errorf("invalid or expired token")
+	}
+
+	return userID, nil
+}
+
+func updatePassword(userID, newPassword string) error {
+	if err := validatePasswordStrength(newPassword); err != nil {
+		return err
+	}
+
+	hash, err := hashPassword(newPassword)
+	if err != nil {
+		return err
+	}
+
+	query := "UPDATE users SET password_hash = ? WHERE id = ?"
+	_, err = db.Exec(query, hash, userID)
+	if err != nil {
+		return fmt.Errorf("failed to update password: %w", err)
+	}
+
+	// Delete used reset token
+	deleteQuery := "DELETE FROM password_reset_tokens WHERE user_id = ?"
+	db.Exec(deleteQuery, userID)
+
+	return nil
 }
