@@ -33,14 +33,11 @@ export function Cart() {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-6">
             {cart.map((item) => (
-              <div
-                key={`${item.id}-${item.selectedSize}`}
-                className="flex gap-4 border-b pb-6"
-              >
+              <div key={item.id} className="flex gap-4 border-b pb-6">
                 <div className="w-24 h-32 flex-shrink-0 bg-neutral-100">
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={item.product?.image_url}
+                    alt={item.product?.title}
                     className="size-full object-cover"
                   />
                 </div>
@@ -49,33 +46,28 @@ export function Cart() {
                   <div className="flex justify-between gap-4 mb-2">
                     <div>
                       <Link
-                        to={`/product/${item.id}`}
+                        to={`/product/${item.product_id}`}
                         className="hover:text-neutral-600 transition-colors"
                       >
-                        <h3 className="mb-1">{item.name}</h3>
+                        <h3 className="mb-1">{item.product?.title}</h3>
                       </Link>
-                      <p className="text-sm text-neutral-600">{item.category}</p>
-                      <p className="text-sm text-neutral-600">Size: {item.selectedSize}</p>
+                      <p className="text-sm text-neutral-600">{item.product?.category}</p>
                     </div>
-                    <p className="flex-shrink-0">€{item.price}</p>
+                    <p className="flex-shrink-0">€{item.product?.price}</p>
                   </div>
 
                   <div className="flex items-center justify-between mt-4">
                     {/* Quantity Controls */}
                     <div className="flex items-center gap-3">
                       <button
-                        onClick={() =>
-                          updateQuantity(item.id, item.selectedSize, item.quantity - 1)
-                        }
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         className="size-8 flex items-center justify-center border hover:bg-neutral-100 transition-colors"
                       >
                         <Minus className="size-4" />
                       </button>
                       <span className="w-8 text-center">{item.quantity}</span>
                       <button
-                        onClick={() =>
-                          updateQuantity(item.id, item.selectedSize, item.quantity + 1)
-                        }
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         className="size-8 flex items-center justify-center border hover:bg-neutral-100 transition-colors"
                       >
                         <Plus className="size-4" />
@@ -84,7 +76,7 @@ export function Cart() {
 
                     {/* Remove Button */}
                     <button
-                      onClick={() => removeFromCart(item.id, item.selectedSize)}
+                      onClick={() => removeFromCart(item.id)}
                       className="text-sm text-neutral-600 hover:text-black transition-colors flex items-center gap-2"
                     >
                       <Trash2 className="size-4" />

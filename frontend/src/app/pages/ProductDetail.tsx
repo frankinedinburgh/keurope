@@ -2,19 +2,28 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { ArrowLeft, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { Product } from '../context/CartContext';
+
+const API_BASE = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:5000/api'
+  : 'https://api.k-europe.com/api';
 
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [cartLoading, setCartLoading] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${id}`);
+        const response = await fetch(`${API_BASE}/products/${id}`);
         const data = await response.json();
         if (data.status === 'success') {
           setProduct(data.data);
@@ -28,8 +37,6 @@ export function ProductDetail() {
 
     fetchProduct();
   }, [id]);
-  const [selectedSize, setSelectedSize] = useState<string>('');
-  const [addedToCart, setAddedToCart] = useState(false);
 
   if (loading) {
     return (
@@ -52,11 +59,24 @@ export function ProductDetail() {
     );
   }
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!selectedSize) return;
-    addToCart(product, selectedSize);
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
+
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    setCartLoading(true);
+    try {
+      await addToCart(product, 1);
+      setAddedToCart(true);
+      setTimeout(() => setAddedToCart(false), 2000);
+    } catch (err) {
+      console.error('Failed to add to cart:', err);
+    } finally {
+      setCartLoading(false);
+    }
   };
 
   return (
@@ -116,13 +136,13 @@ export function ProductDetail() {
             {/* Add to Cart Button */}
             <button
               onClick={handleAddToCart}
-              disabled={!selectedSize}
+              disabled={!selectedSize || cartLoading}
               className={`w-full py-4 mb-4 transition-all ${
                 !selectedSize
                   ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
                   : addedToCart
                   ? 'bg-green-600 text-white'
-                  : 'bg-black text-white hover:bg-neutral-800'
+                  : 'bg-black text-white hover:bg-neutral-800 disabled:bg-gray-400'
               }`}
             >
               {addedToCart ? (
@@ -130,8 +150,12 @@ export function ProductDetail() {
                   <Check className="size-5" />
                   Added to Cart
                 </span>
-              ) : (
+              ) : cartLoading ? (
+                'Adding...'
+              ) : isAuthenticated ? (
                 'Add to Cart'
+              ) : (
+                'Login to Buy'
               )}
             </button>
 
