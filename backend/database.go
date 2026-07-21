@@ -176,10 +176,20 @@ func seedData() error {
     if err != nil {
         return fmt.Errorf("failed to check products: %w", err)
     }
-    
-    // If products already exist, don't seed again
+
+    // Always reseed to ensure latest product data (check if image URLs are local)
     if count > 0 {
-        return nil
+        var imageURL string
+        err := db.QueryRow("SELECT image_url FROM products LIMIT 1").Scan(&imageURL)
+        if err == nil && imageURL != "" {
+            // If first product already has local path, don't reseed
+            if imageURL[0:1] == "/" {
+                return nil
+            }
+        }
+        // If images are still external (Unsplash), clear and reseed
+        deleteQuery := "DELETE FROM products"
+        db.Exec(deleteQuery)
     }
     
     // Insert initial products
