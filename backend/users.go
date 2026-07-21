@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/rand"
 	"fmt"
+	"regexp"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -31,7 +32,30 @@ func verifyPassword(hash, password string) bool {
 	return err == nil
 }
 
+func validatePasswordStrength(password string) error {
+	if len(password) < 10 {
+		return fmt.Errorf("password must be at least 10 characters")
+	}
+	if !regexp.MustCompile(`[A-Z]`).MatchString(password) {
+		return fmt.Errorf("password must contain at least 1 uppercase letter")
+	}
+	if !regexp.MustCompile(`[a-z]`).MatchString(password) {
+		return fmt.Errorf("password must contain at least 1 lowercase letter")
+	}
+	if !regexp.MustCompile(`[0-9]`).MatchString(password) {
+		return fmt.Errorf("password must contain at least 1 number")
+	}
+	if !regexp.MustCompile(`[!@#$%^&*]`).MatchString(password) {
+		return fmt.Errorf("password must contain at least 1 special character (!@#$%^&*)")
+	}
+	return nil
+}
+
 func registerUser(email, password string) (*User, error) {
+	if err := validatePasswordStrength(password); err != nil {
+		return nil, err
+	}
+
 	hash, err := hashPassword(password)
 	if err != nil {
 		return nil, err

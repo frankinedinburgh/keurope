@@ -2,6 +2,16 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 
+const validatePassword = (password: string): string[] => {
+  const errors: string[] = [];
+  if (password.length < 10) errors.push('At least 10 characters');
+  if (!/[A-Z]/.test(password)) errors.push('At least 1 uppercase letter');
+  if (!/[a-z]/.test(password)) errors.push('At least 1 lowercase letter');
+  if (!/[0-9]/.test(password)) errors.push('At least 1 number');
+  if (!/[!@#$%^&*]/.test(password)) errors.push('At least 1 special character (!@#$%^&*)');
+  return errors;
+};
+
 export function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,17 +21,20 @@ export function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  const passwordErrors = validatePassword(password);
+  const passwordValid = passwordErrors.length === 0;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
+    if (!passwordValid) {
+      setError('Password requirements not met');
       return;
     }
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
@@ -80,6 +93,20 @@ export function Register() {
                 required
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-black focus:outline-none focus:ring-black"
               />
+              {password && (
+                <div className="mt-2 space-y-1">
+                  {passwordErrors.map((err) => (
+                    <p key={err} className="text-xs text-red-600 flex items-center gap-1">
+                      ✗ {err}
+                    </p>
+                  ))}
+                  {passwordValid && (
+                    <p className="text-xs text-green-600 flex items-center gap-1">
+                      ✓ Password is strong
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             <div>
@@ -99,7 +126,7 @@ export function Register() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !passwordValid || password !== confirmPassword}
             className="w-full rounded-md bg-black py-2 px-4 text-white font-medium hover:bg-gray-800 disabled:bg-gray-400"
           >
             {loading ? 'Creating account...' : 'Register'}
