@@ -1,3 +1,14 @@
+// @title Keurope API
+// @version 1.0
+// @description Korean Fashion E-commerce Backend API
+// @host api.keurope.com
+// @basePath /api
+// @schemes https http
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description "Type 'Bearer TOKEN'"
+
 package main
 
 import (
@@ -6,6 +17,8 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
+	_ "keurope/docs"
 )
 
 func main() {
@@ -48,6 +61,12 @@ func main() {
 	protected.HandleFunc("/orders", createOrderHandler).Methods("POST")
 	protected.HandleFunc("/orders", getOrdersHandler).Methods("GET")
 	protected.HandleFunc("/orders/all", getAllOrdersHandler).Methods("GET")
+
+	// Swagger API documentation (public)
+	router.PathPrefix("/docs").Handler(httpSwagger.WrapHandler)
+	router.HandleFunc("/docs.json", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./docs/swagger.json")
+	})
 
 	// Apply CORS middleware to all routes
 	handler := corsMiddleware(router)

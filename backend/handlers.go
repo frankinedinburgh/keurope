@@ -7,6 +7,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetProducts returns all products, optionally filtered by category
+// @Summary List Products
+// @Description Get all products with optional category filter
+// @Tags Products
+// @Produce json
+// @Param category query string false "Category name"
+// @Success 200 {object} map[string]interface{}
+// @Router /products [get]
 func getProducts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -247,6 +255,17 @@ func deleteProduct(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+// CreateOrder creates a new order for the authenticated user
+// @Summary Create Order
+// @Description Create a new order with shipping information
+// @Security BearerAuth
+// @Tags Orders
+// @Accept json
+// @Produce json
+// @Param request body object true "Order details"
+// @Success 201 {object} ApiResponse
+// @Failure 401 {object} ApiResponse "Unauthorized"
+// @Router /orders [post]
 func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -310,6 +329,14 @@ func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+// GetOrders returns orders for the authenticated user
+// @Summary Get User Orders
+// @Security BearerAuth
+// @Tags Orders
+// @Produce json
+// @Success 200 {object} ApiResponse
+// @Failure 401 {object} ApiResponse "Unauthorized"
+// @Router /orders [get]
 func getOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

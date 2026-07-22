@@ -63,6 +63,16 @@ func verifyToken(tokenString string) (*Claims, error) {
 	return claims, nil
 }
 
+// Register registers a new user account
+// @Summary User Registration
+// @Description Create a new user account with email and password
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body object true "Registration data" SchemaExample({"email":"user@example.com","password":"password123"})
+// @Success 201 {object} AuthResponse
+// @Failure 400 {string} string "Invalid request or user already exists"
+// @Router /auth/register [post]
 func register(w http.ResponseWriter, r *http.Request) {
 	var req AuthRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -95,6 +105,16 @@ func register(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Login authenticates a user and returns a JWT token
+// @Summary User Login
+// @Description Authenticate user with email and password, returns JWT token
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body object true "Login credentials" SchemaExample({"email":"user@example.com","password":"password123"})
+// @Success 200 {object} AuthResponse
+// @Failure 401 {string} string "Invalid credentials"
+// @Router /auth/login [post]
 func login(w http.ResponseWriter, r *http.Request) {
 	var req AuthRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -127,6 +147,14 @@ func login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// GetMe returns the current authenticated user
+// @Summary Get Current User
+// @Security BearerAuth
+// @Tags Auth
+// @Produce json
+// @Success 200 {object} User
+// @Failure 401 {string} string "Unauthorized"
+// @Router /auth/me [get]
 func getMe(w http.ResponseWriter, r *http.Request) {
 	tokenString := extractToken(r)
 	if tokenString == "" {
@@ -198,6 +226,14 @@ type ResetPasswordRequest struct {
 	NewPassword string `json:"new_password"`
 }
 
+// ForgotPassword sends a password reset token to user email
+// @Summary Forgot Password
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body object true "User email"
+// @Success 200 {object} map[string]string
+// @Router /auth/forgot-password [post]
 func forgotPassword(w http.ResponseWriter, r *http.Request) {
 	var req ForgotPasswordRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -234,6 +270,14 @@ func forgotPassword(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// ResetPassword resets user password with a reset token
+// @Summary Reset Password
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body object true "Reset token and new password"
+// @Success 200 {object} map[string]string
+// @Router /auth/reset-password [post]
 func resetPassword(w http.ResponseWriter, r *http.Request) {
 	var req ResetPasswordRequest
 	err := json.NewDecoder(r.Body).Decode(&req)

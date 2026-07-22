@@ -13,6 +13,14 @@ type AddToCartRequest struct {
 	Quantity  int    `json:"quantity"`
 }
 
+// GetCart returns the shopping cart for the authenticated user
+// @Summary Get Shopping Cart
+// @Security BearerAuth
+// @Tags Cart
+// @Produce json
+// @Success 200 {object} CartResponse
+// @Failure 401 {string} string "Unauthorized"
+// @Router /cart [get]
 func getCartHandler(w http.ResponseWriter, r *http.Request) {
 	claims := getClaimsFromContext(r)
 	if claims == nil {
@@ -47,6 +55,16 @@ func getCartHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+// AddToCart adds a product to the user's shopping cart
+// @Summary Add to Cart
+// @Security BearerAuth
+// @Tags Cart
+// @Accept json
+// @Produce json
+// @Param request body AddToCartRequest true "Product ID and quantity"
+// @Success 200 {object} CartItem
+// @Failure 400 {string} string "Invalid request"
+// @Router /cart [post]
 func addToCartHandler(w http.ResponseWriter, r *http.Request) {
 	claims := getClaimsFromContext(r)
 	if claims == nil {
