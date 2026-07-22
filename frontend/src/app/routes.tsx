@@ -14,6 +14,7 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { AddProduct } from './pages/AddProduct';
 import { EditProduct } from './pages/EditProduct';
 import { AdminOrders } from './pages/AdminOrders';
+import { UserOrders } from './pages/UserOrders';
 import { LogoPreview } from './pages/LogoPreview';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
       { path: 'shop', Component: Shop },
       { path: 'product/:id', Component: ProductDetail },
       { path: 'login', Component: Login },
+      { path: 'orders', Component: UserOrders },
       { path: 'register', Component: Register },
       { path: 'forgot-password', Component: ForgotPassword },
       { path: 'reset-password', Component: ResetPassword },

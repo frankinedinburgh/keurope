@@ -55,6 +55,9 @@ export function Header() {
               {user ? (
                 <>
                   <span className="text-sm text-gray-600">{user.email}</span>
+                  <Link to="/orders" className="text-sm hover:text-neutral-600 transition-colors">
+                    My Orders
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="text-sm hover:text-neutral-600 transition-colors flex items-center gap-1"
@@ -106,6 +109,13 @@ export function Header() {
               {user ? (
                 <>
                   <span className="text-sm text-gray-600">{user.email}</span>
+                  <Link
+                    to="/orders"
+                    className="text-sm hover:text-neutral-600 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    My Orders
+                  </Link>
                   <button
                     onClick={() => {
                       handleLogout();
