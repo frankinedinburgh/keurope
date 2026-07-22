@@ -52,9 +52,9 @@ func main() {
 	// Cart routes (protected)
 	router.HandleFunc("/api/cart", getCartHandler).Methods("GET")
 	router.HandleFunc("/api/cart", addToCartHandler).Methods("POST")
+	router.HandleFunc("/api/cart/clear", clearCartHandler).Methods("DELETE")
 	router.HandleFunc("/api/cart/{cartId}", removeFromCartHandler).Methods("DELETE")
 	router.HandleFunc("/api/cart/{cartId}", updateCartQuantityHandler).Methods("PUT")
-	router.HandleFunc("/api/cart/clear", clearCartHandler).Methods("DELETE")
 
 	// Order routes (protected)
 	router.HandleFunc("/api/orders", createOrderHandler).Methods("POST")
