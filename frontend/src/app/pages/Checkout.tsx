@@ -65,7 +65,14 @@ export function Checkout() {
 
       const data = await response.json();
       setOrderID(data.data.order_id);
-      await clearCart();
+
+      try {
+        await clearCart();
+      } catch (cartErr) {
+        console.error('Cart clearing failed:', cartErr);
+        throw new Error('Order created but cart failed to clear. Please refresh the page.');
+      }
+
       setOrderComplete(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to place order');

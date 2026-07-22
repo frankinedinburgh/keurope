@@ -157,9 +157,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (response.ok) {
-        setCart([]);
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error?.message || 'Failed to clear cart');
       }
+
+      setCart([]);
     } catch (err) {
       console.error('Failed to clear cart:', err);
       throw err;
