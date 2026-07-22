@@ -153,16 +153,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!token) return;
 
     try {
+      console.log('Clearing cart from:', `${API_BASE}/cart/clear`);
       const response = await fetch(`${API_BASE}/cart/clear`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      console.log('Clear cart response status:', response.status);
+
       if (!response.ok) {
         const text = await response.text();
+        console.error('Clear cart error response:', text);
         throw new Error(text || 'Failed to clear cart');
       }
 
+      const data = await response.json();
+      console.log('Cart cleared successfully:', data);
       setCart([]);
     } catch (err) {
       console.error('Failed to clear cart:', err);
