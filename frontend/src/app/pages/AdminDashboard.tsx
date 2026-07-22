@@ -4,8 +4,11 @@ import { Plus, LogOut, Edit, Trash2 } from 'lucide-react';
 import { getProducts } from '../services/api';
 
 export function AdminDashboard() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortBy, setSortBy] = useState('name');
   const navigate = useNavigate();
 
   // Check admin auth
@@ -21,7 +24,7 @@ export function AdminDashboard() {
     const fetchProducts = async () => {
       try {
         const data = await getProducts();
-        setProducts(data);
+        setAllProducts(data);
       } catch (err) {
         console.error('Failed to load products:', err);
       } finally {
@@ -32,10 +35,27 @@ export function AdminDashboard() {
     fetchProducts();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminAuth');
-    navigate('/admin/login');
-  };
+  // Filter and sort products
+  const filteredProducts = allProducts
+    .filter((p) => {
+      const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'price-low':
+          return a.price - b.price;
+        case 'price-high':
+          return b.price - a.price;
+        case 'name':
+          return a.title.localeCompare(b.title);
+        default:
+          return 0;
+      }
+    });
+
+  const categories = ['All', ...Array.from(new Set(allProducts.map((p) => p.category)))];
 
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
@@ -47,12 +67,17 @@ export function AdminDashboard() {
           method: 'DELETE',
         });
         if (response.ok) {
-          setProducts(products.filter((p) => p.id !== id));
+          setAllProducts(allProducts.filter((p) => p.id !== id));
         }
       } catch (err) {
         console.error('Failed to delete product:', err);
       }
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuth');
+    navigate('/admin/login');
   };
 
   if (loading) {
@@ -101,6 +126,64 @@ export function AdminDashboard() {
           </Link>
         </div>
 
+        {/* Filters */}
+        <div className="mb-8 bg-white rounded-lg p-6 border space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Search */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Search Products
+              </label>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search by name..."
+                className="w-full px-4 py-2 border border-gray-300 rounded focus:border-black focus:outline-none"
+              />
+            </div>
+
+            {/* Category Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category
+              </label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded focus:border-black focus:outline-none"
+              >
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Sort By
+              </label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded focus:border-black focus:outline-none"
+              >
+                <option value="name">Name (A-Z)</option>
+                <option value="price-low">Price (Low to High)</option>
+                <option value="price-high">Price (High to Low)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Filter Summary */}
+          <div className="text-sm text-gray-600">
+            Showing {filteredProducts.length} of {allProducts.length} products
+          </div>
+        </div>
+
         {/* Products Table */}
         <div className="bg-white rounded-lg border overflow-x-auto">
           <table className="w-full">
@@ -113,7 +196,7 @@ export function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <tr key={product.id} className="border-b hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
@@ -158,15 +241,19 @@ export function AdminDashboard() {
           </table>
         </div>
 
-        {products.length === 0 && (
+        {filteredProducts.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">No products yet</p>
-            <Link
-              to="/admin/add-product"
-              className="text-blue-600 hover:underline"
-            >
-              Add your first product
-            </Link>
+            <p className="text-gray-600 mb-4">
+              {allProducts.length === 0 ? 'No products yet' : 'No products match your filters'}
+            </p>
+            {allProducts.length === 0 && (
+              <Link
+                to="/admin/add-product"
+                className="text-blue-600 hover:underline"
+              >
+                Add your first product
+              </Link>
+            )}
           </div>
         )}
       </main>
