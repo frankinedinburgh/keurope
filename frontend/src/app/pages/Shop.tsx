@@ -1,7 +1,9 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router';
 import { ProductCard } from '../components/ProductCard';
 import { getProducts } from '../services/api';
+
+const PRODUCTS_PER_PAGE = 12;
 
 export function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -9,19 +11,22 @@ export function Shop() {
 
   const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam || 'All');
   const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [displayedCount, setDisplayedCount] = useState(PRODUCTS_PER_PAGE);
   const [loading, setLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // Update selectedCategory when URL parameter changes
   useEffect(() => {
     setSelectedCategory(categoryParam || 'All');
+    setDisplayedCount(PRODUCTS_PER_PAGE);
   }, [categoryParam]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        // Always fetch ALL products to show all category options
         const data = await getProducts();
         setAllProducts(data);
         setError(null);
@@ -45,8 +50,36 @@ export function Shop() {
     return allProducts.filter((p) => p.category === selectedCategory);
   }, [selectedCategory, allProducts]);
 
+  const displayedProducts = useMemo(() => {
+    return filteredProducts.slice(0, displayedCount);
+  }, [filteredProducts, displayedCount]);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoadingMore && displayedCount < filteredProducts.length) {
+          setIsLoadingMore(true);
+          // Simulate network delay for smooth UX
+          setTimeout(() => {
+            setDisplayedCount((prev) => Math.min(prev + PRODUCTS_PER_PAGE, filteredProducts.length));
+            setIsLoadingMore(false);
+          }, 300);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [displayedCount, isLoadingMore, filteredProducts.length]);
+
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
+    setDisplayedCount(PRODUCTS_PER_PAGE);
     if (category === 'All') {
       setSearchParams({});
     } else {
@@ -124,11 +157,25 @@ export function Shop() {
 
         {/* Products Grid */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {displayedProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+
+            {/* Load More Trigger */}
+            <div ref={loadMoreRef} className="mt-12 flex justify-center">
+              {isLoadingMore && (
+                <p className="text-neutral-600">Loading more products...</p>
+              )}
+              {displayedCount < filteredProducts.length && !isLoadingMore && (
+                <p className="text-sm text-neutral-500">
+                  Scroll down to load more ({displayedCount} of {filteredProducts.length})
+                </p>
+              )}
+            </div>
+          </>
         ) : (
           <div className="text-center py-16">
             <p className="text-neutral-600">No products found in this category.</p>
