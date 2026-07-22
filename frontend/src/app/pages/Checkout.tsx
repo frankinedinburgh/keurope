@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { ArrowLeft, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { API_BASE } from '../config/api';
 
 export function Checkout() {
-  const { cart, totalPrice, clearCart } = useCart();
+  const { items, total, clearCart } = useCart();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [orderComplete, setOrderComplete] = useState(false);
+  const [orderID, setOrderID] = useState('');
 
   const [formData, setFormData] = useState({
     email: '',
@@ -15,24 +19,61 @@ export function Checkout() {
     address: '',
     city: '',
     postalCode: '',
-    country: '',
-    cardNumber: '',
-    cardExpiry: '',
-    cardCvc: '',
+    country: 'Ireland',
   });
 
-  if (cart.length === 0 && !orderComplete) {
+  if (items.length === 0 && !orderComplete) {
     navigate('/cart');
     return null;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setOrderComplete(true);
-    clearCart();
+    setError('');
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Please login to place an order');
+      }
+
+      const response = await fetch(`${API_BASE}/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          address: formData.address,
+          city: formData.city,
+          postal_code: formData.postalCode,
+          country: formData.country,
+          items: items,
+          total_price: total,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error?.message || 'Failed to create order');
+      }
+
+      const data = await response.json();
+      setOrderID(data.data.order_id);
+      setOrderComplete(true);
+      clearCart();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to place order');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -41,24 +82,24 @@ export function Checkout() {
 
   if (orderComplete) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center max-w-md px-4">
           <div className="size-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
             <Check className="size-8 text-green-600" />
           </div>
           <h1 className="text-3xl mb-4">Order Confirmed!</h1>
-          <p className="text-neutral-600 mb-8">
-            Thank you for your purchase. We've sent a confirmation email with your order details.
+          <p className="text-neutral-600 mb-2">
+            Thank you for your purchase. Your order has been created successfully.
+          </p>
+          <p className="text-sm text-neutral-500 mb-8">
+            Order ID: <span className="font-mono font-semibold">{orderID}</span>
           </p>
           <Link
             to="/shop"
-            className="inline-block bg-black text-white px-8 py-3 hover:bg-neutral-800 transition-colors mb-4"
+            className="inline-block bg-black text-white px-8 py-3 hover:bg-neutral-800 transition-colors"
           >
             Continue Shopping
           </Link>
-          <p className="text-sm text-neutral-600">
-            Your order will be shipped from Ireland within 2-3 business days.
-          </p>
         </div>
       </div>
     );
@@ -183,86 +224,44 @@ export function Checkout() {
                     <label htmlFor="country" className="block text-sm mb-2">
                       Country
                     </label>
-                    <input
-                      type="text"
+                    <select
                       id="country"
                       name="country"
                       required
                       value={formData.country}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border border-neutral-300 focus:outline-none focus:border-black"
-                      placeholder="Ireland, France, Germany, etc."
-                    />
+                    >
+                      <option value="Ireland">Ireland</option>
+                      <option value="United Kingdom">United Kingdom</option>
+                      <option value="France">France</option>
+                      <option value="Germany">Germany</option>
+                      <option value="Spain">Spain</option>
+                      <option value="Italy">Italy</option>
+                      <option value="Netherlands">Netherlands</option>
+                      <option value="Belgium">Belgium</option>
+                      <option value="Other">Other</option>
+                    </select>
                   </div>
                 </div>
               </div>
 
-              {/* Payment Information */}
-              <div>
-                <h2 className="text-lg mb-4">Payment Information</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="cardNumber" className="block text-sm mb-2">
-                      Card Number
-                    </label>
-                    <input
-                      type="text"
-                      id="cardNumber"
-                      name="cardNumber"
-                      required
-                      value={formData.cardNumber}
-                      onChange={handleChange}
-                      placeholder="1234 5678 9012 3456"
-                      maxLength={19}
-                      className="w-full px-4 py-3 border border-neutral-300 focus:outline-none focus:border-black"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="cardExpiry" className="block text-sm mb-2">
-                        Expiry Date
-                      </label>
-                      <input
-                        type="text"
-                        id="cardExpiry"
-                        name="cardExpiry"
-                        required
-                        value={formData.cardExpiry}
-                        onChange={handleChange}
-                        placeholder="MM/YY"
-                        maxLength={5}
-                        className="w-full px-4 py-3 border border-neutral-300 focus:outline-none focus:border-black"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="cardCvc" className="block text-sm mb-2">
-                        CVC
-                      </label>
-                      <input
-                        type="text"
-                        id="cardCvc"
-                        name="cardCvc"
-                        required
-                        value={formData.cardCvc}
-                        onChange={handleChange}
-                        placeholder="123"
-                        maxLength={3}
-                        className="w-full px-4 py-3 border border-neutral-300 focus:outline-none focus:border-black"
-                      />
-                    </div>
-                  </div>
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded p-4">
+                  <p className="text-sm text-red-800">{error}</p>
                 </div>
-              </div>
+              )}
 
               <button
                 type="submit"
-                className="w-full bg-black text-white py-4 hover:bg-neutral-800 transition-colors"
+                disabled={loading}
+                className="w-full bg-black text-white py-4 hover:bg-neutral-800 disabled:bg-gray-400 transition-colors"
               >
-                Complete Order
+                {loading ? 'Processing...' : 'Place Order'}
               </button>
 
               <p className="text-xs text-neutral-500 text-center">
-                This is a demo checkout. No actual payment will be processed.
+                Order will be created and stored securely in our system.
               </p>
             </form>
           </div>
@@ -273,23 +272,25 @@ export function Checkout() {
               <h2 className="text-xl mb-6">Order Summary</h2>
 
               <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
-                {cart.map((item) => (
+                {items.map((item) => (
                   <div
-                    key={`${item.id}-${item.selectedSize}`}
-                    className="flex gap-4"
+                    key={item.id}
+                    className="flex gap-4 border-b pb-4"
                   >
-                    <div className="w-20 h-24 flex-shrink-0 bg-neutral-100">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="size-full object-cover"
-                      />
+                    <div className="w-16 h-20 flex-shrink-0 bg-neutral-100 rounded">
+                      {item.product?.image_url && (
+                        <img
+                          src={item.product.image_url}
+                          alt={item.product?.title}
+                          loading="lazy"
+                          className="size-full object-cover rounded"
+                        />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm mb-1">{item.name}</h3>
-                      <p className="text-xs text-neutral-600">Size: {item.selectedSize}</p>
+                      <h3 className="text-sm font-medium mb-1">{item.product?.title}</h3>
                       <p className="text-xs text-neutral-600">Qty: {item.quantity}</p>
-                      <p className="text-sm mt-2">€{(item.price * item.quantity).toFixed(2)}</p>
+                      <p className="text-sm mt-2 font-medium">€{((item.product?.price || 0) * item.quantity).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
@@ -298,15 +299,15 @@ export function Checkout() {
               <div className="border-t pt-6 space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-neutral-600">Subtotal</span>
-                  <span>€{totalPrice.toFixed(2)}</span>
+                  <span>€{total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-neutral-600">Shipping</span>
-                  <span className="text-green-600">Free</span>
+                  <span className={total > 150 ? 'text-green-600' : ''}>{total > 150 ? 'Free' : '€10.00'}</span>
                 </div>
-                <div className="border-t pt-3 flex justify-between">
+                <div className="border-t pt-3 flex justify-between font-bold">
                   <span>Total</span>
-                  <span className="text-xl">€{totalPrice.toFixed(2)}</span>
+                  <span className="text-xl">€{(total + (total > 150 ? 0 : 10)).toFixed(2)}</span>
                 </div>
               </div>
             </div>
