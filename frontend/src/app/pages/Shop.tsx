@@ -5,6 +5,7 @@ import { getProducts } from '../services/api';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { useAsync } from '../hooks/useAsync';
 import { ErrorAlert } from '../components/ErrorAlert';
+import { ProductGridSkeleton } from '../components/ProductSkeleton';
 
 const PRODUCTS_PER_PAGE = 12;
 
@@ -84,8 +85,21 @@ export function Shop() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-neutral-600">Loading products...</p>
+      <div className="min-h-screen bg-gray-50 px-4 py-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-4">Shop</h1>
+            <div className="space-y-2">
+              <div className="h-10 bg-neutral-200 rounded animate-pulse w-64"></div>
+              <div className="flex gap-2 pt-4">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="h-8 bg-neutral-200 rounded animate-pulse w-20"></div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <ProductGridSkeleton />
+        </div>
       </div>
     );
   }

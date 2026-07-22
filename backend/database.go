@@ -362,7 +362,7 @@ func createOrder(userID string, firstName string, lastName string, email string,
 }
 
 func getOrdersByUserID(userID string) ([]Order, error) {
-	query := "SELECT id, user_id, total_price, status, first_name, last_name, email, created_at FROM orders WHERE user_id = ? ORDER BY created_at DESC"
+	query := "SELECT id, user_id, first_name, last_name, email, address, city, postal_code, country, total_price, status, created_at FROM orders WHERE user_id = ? ORDER BY created_at DESC"
 	rows, err := db.Query(query, userID)
 	if err != nil {
 		return nil, fmt.Errorf("query error: %w", err)
@@ -372,7 +372,7 @@ func getOrdersByUserID(userID string) ([]Order, error) {
 	var orders []Order
 	for rows.Next() {
 		var o Order
-		err := rows.Scan(&o.ID, &o.UserID, &o.TotalPrice, &o.Status, &o.FirstName, &o.LastName, &o.Email, &o.CreatedAt)
+		err := rows.Scan(&o.ID, &o.UserID, &o.FirstName, &o.LastName, &o.Email, &o.Address, &o.City, &o.PostalCode, &o.Country, &o.TotalPrice, &o.Status, &o.CreatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("scan error: %w", err)
 		}
@@ -383,7 +383,7 @@ func getOrdersByUserID(userID string) ([]Order, error) {
 }
 
 func getAllOrders() ([]Order, error) {
-	query := "SELECT id, user_id, total_price, status, first_name, last_name, email, created_at FROM orders ORDER BY created_at DESC"
+	query := "SELECT id, user_id, first_name, last_name, email, address, city, postal_code, country, total_price, status, created_at FROM orders ORDER BY created_at DESC"
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("query error: %w", err)
@@ -393,7 +393,7 @@ func getAllOrders() ([]Order, error) {
 	var orders []Order
 	for rows.Next() {
 		var o Order
-		err := rows.Scan(&o.ID, &o.UserID, &o.TotalPrice, &o.Status, &o.FirstName, &o.LastName, &o.Email, &o.CreatedAt)
+		err := rows.Scan(&o.ID, &o.UserID, &o.FirstName, &o.LastName, &o.Email, &o.Address, &o.City, &o.PostalCode, &o.Country, &o.TotalPrice, &o.Status, &o.CreatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("scan error: %w", err)
 		}

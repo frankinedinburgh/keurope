@@ -5,16 +5,18 @@ import { useAuth } from '../context/AuthContext';
 import { ordersAPI, Order } from '../services/api';
 import { useAsync } from '../hooks/useAsync';
 import { ErrorAlert } from '../components/ErrorAlert';
+import { OrderListSkeleton } from '../components/OrderSkeleton';
 
 export function UserOrders() {
   const navigate = useNavigate();
   const { user, token } = useAuth();
-  const { data: orders = [], loading, errorMessage, execute, reset } = useAsync<Order[]>(
+  const { data, loading, errorMessage, execute, reset } = useAsync<Order[]>(
     async () => {
       if (!token) throw new Error('Token not available');
       return ordersAPI.getUser(token);
     }
   );
+  const orders = data || [];
 
   useEffect(() => {
     if (!user || !token) {
@@ -49,8 +51,22 @@ export function UserOrders() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-neutral-600">Loading your orders...</p>
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white border-b">
+          <div className="max-w-7xl mx-auto px-4 py-6">
+            <button className="flex items-center gap-2 text-gray-600 mb-4 cursor-not-allowed opacity-50">
+              <ArrowLeft className="size-4" />
+              Back to Shop
+            </button>
+            <div className="space-y-2">
+              <div className="h-10 bg-neutral-200 rounded animate-pulse w-40"></div>
+              <div className="h-6 bg-neutral-200 rounded animate-pulse w-32 mt-4"></div>
+            </div>
+          </div>
+        </header>
+        <main className="max-w-7xl mx-auto px-4 py-12">
+          <OrderListSkeleton count={3} />
+        </main>
       </div>
     );
   }
