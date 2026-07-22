@@ -8,22 +8,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// CORS middleware to allow requests from frontend
-func corsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
-}
-
 func main() {
 	// Initialize database
 	err := initDatabase()
@@ -49,17 +33,21 @@ func main() {
 	router.HandleFunc("/api/products/{id}", deleteProduct).Methods("DELETE")
 	router.HandleFunc("/api/categories", getCategories).Methods("GET")
 
+	// Protected routes (require authentication)
+	protected := router.PathPrefix("/api").Subrouter()
+	protected.Use(authMiddleware)
+
 	// Cart routes (protected)
-	router.HandleFunc("/api/cart", getCartHandler).Methods("GET")
-	router.HandleFunc("/api/cart", addToCartHandler).Methods("POST")
-	router.HandleFunc("/api/cart/clear", clearCartHandler).Methods("DELETE")
-	router.HandleFunc("/api/cart/{cartId}", removeFromCartHandler).Methods("DELETE")
-	router.HandleFunc("/api/cart/{cartId}", updateCartQuantityHandler).Methods("PUT")
+	protected.HandleFunc("/cart", getCartHandler).Methods("GET")
+	protected.HandleFunc("/cart", addToCartHandler).Methods("POST")
+	protected.HandleFunc("/cart/clear", clearCartHandler).Methods("DELETE")
+	protected.HandleFunc("/cart/{cartId}", removeFromCartHandler).Methods("DELETE")
+	protected.HandleFunc("/cart/{cartId}", updateCartQuantityHandler).Methods("PUT")
 
 	// Order routes (protected)
-	router.HandleFunc("/api/orders", createOrderHandler).Methods("POST")
-	router.HandleFunc("/api/orders", getOrdersHandler).Methods("GET")
-	router.HandleFunc("/api/orders/all", getAllOrdersHandler).Methods("GET")
+	protected.HandleFunc("/orders", createOrderHandler).Methods("POST")
+	protected.HandleFunc("/orders", getOrdersHandler).Methods("GET")
+	protected.HandleFunc("/orders/all", getAllOrdersHandler).Methods("GET")
 
 	// Apply CORS middleware to all routes
 	handler := corsMiddleware(router)

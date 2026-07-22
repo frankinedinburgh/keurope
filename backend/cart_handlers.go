@@ -14,14 +14,8 @@ type AddToCartRequest struct {
 }
 
 func getCartHandler(w http.ResponseWriter, r *http.Request) {
-	tokenString := extractToken(r)
-	if tokenString == "" {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	claims, err := verifyToken(tokenString)
-	if err != nil {
+	claims := getClaimsFromContext(r)
+	if claims == nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
@@ -54,20 +48,14 @@ func getCartHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func addToCartHandler(w http.ResponseWriter, r *http.Request) {
-	tokenString := extractToken(r)
-	if tokenString == "" {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	claims, err := verifyToken(tokenString)
-	if err != nil {
+	claims := getClaimsFromContext(r)
+	if claims == nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
 	var req AddToCartRequest
-	err = json.NewDecoder(r.Body).Decode(&req)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
@@ -89,14 +77,8 @@ func addToCartHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func removeFromCartHandler(w http.ResponseWriter, r *http.Request) {
-	tokenString := extractToken(r)
-	if tokenString == "" {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	claims, err := verifyToken(tokenString)
-	if err != nil {
+	claims := getClaimsFromContext(r)
+	if claims == nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
@@ -107,7 +89,7 @@ func removeFromCartHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = removeFromCart(claims.UserID, cartID)
+	err := removeFromCart(claims.UserID, cartID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
@@ -118,14 +100,8 @@ func removeFromCartHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateCartQuantityHandler(w http.ResponseWriter, r *http.Request) {
-	tokenString := extractToken(r)
-	if tokenString == "" {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	claims, err := verifyToken(tokenString)
-	if err != nil {
+	claims := getClaimsFromContext(r)
+	if claims == nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
@@ -139,8 +115,7 @@ func updateCartQuantityHandler(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Quantity int `json:"quantity"`
 	}
-	err = json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
@@ -167,19 +142,13 @@ func updateCartQuantityHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func clearCartHandler(w http.ResponseWriter, r *http.Request) {
-	tokenString := extractToken(r)
-	if tokenString == "" {
+	claims := getClaimsFromContext(r)
+	if claims == nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
-	claims, err := verifyToken(tokenString)
-	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	err = clearCart(claims.UserID)
+	err := clearCart(claims.UserID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -171,13 +172,15 @@ func authMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		_, err := verifyToken(tokenString)
+		claims, err := verifyToken(tokenString)
 		if err != nil {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		// Store claims in request context for handlers to access
+		ctx := context.WithValue(r.Context(), "claims", claims)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
@@ -260,5 +263,30 @@ func resetPassword(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{
 		"status":  "success",
 		"message": "Password has been reset successfully",
+	})
+}
+
+// getClaimsFromContext retrieves JWT claims from request context
+func getClaimsFromContext(r *http.Request) *Claims {
+	claims, ok := r.Context().Value("claims").(*Claims)
+	if !ok {
+		return nil
+	}
+	return claims
+}
+
+// corsMiddleware allows requests from frontend
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	})
 }

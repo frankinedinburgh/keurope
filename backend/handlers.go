@@ -250,27 +250,14 @@ func deleteProduct(w http.ResponseWriter, r *http.Request) {
 func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	token := extractToken(r)
-	if token == "" {
+	claims := getClaimsFromContext(r)
+	if claims == nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(ApiResponse{
 			Status: "error",
 			Error: ErrorResponse{
 				Code:    "UNAUTHORIZED",
-				Message: "Missing token",
-			},
-		})
-		return
-	}
-
-	claims, err := verifyToken(token)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(ApiResponse{
-			Status: "error",
-			Error: ErrorResponse{
-				Code:    "INVALID_TOKEN",
-				Message: "Invalid or expired token",
+				Message: "Missing or invalid token",
 			},
 		})
 		return
@@ -288,8 +275,7 @@ func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 		TotalPrice float64    `json:"total_price"`
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(ApiResponse{
 			Status: "error",
@@ -327,27 +313,14 @@ func createOrderHandler(w http.ResponseWriter, r *http.Request) {
 func getOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	token := extractToken(r)
-	if token == "" {
+	claims := getClaimsFromContext(r)
+	if claims == nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(ApiResponse{
 			Status: "error",
 			Error: ErrorResponse{
 				Code:    "UNAUTHORIZED",
-				Message: "Missing token",
-			},
-		})
-		return
-	}
-
-	claims, err := verifyToken(token)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(ApiResponse{
-			Status: "error",
-			Error: ErrorResponse{
-				Code:    "INVALID_TOKEN",
-				Message: "Invalid or expired token",
+				Message: "Missing or invalid token",
 			},
 		})
 		return
