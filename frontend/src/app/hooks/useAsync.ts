@@ -10,53 +10,96 @@ export interface UseAsyncOptions {
   retryDelay?: number;
 }
 
-export interface UseAsyncReturn<T> {
-  /** The resolved data */
-  data: T | null;
-  /** Whether the async operation is in progress */
-  loading: boolean;
-  /** The error object if the operation failed */
-  error: AppError | null;
-  /** User-friendly error message */
+// ============================================================================
+// Discriminated Union Types
+// ============================================================================
+
+interface IdleState {
+  status: 'idle';
+  data: null;
+  error: null;
+  loading: false;
+  isSuccess: false;
+  isExecuted: false;
+}
+
+interface LoadingState {
+  status: 'loading';
+  data: null;
+  error: null;
+  loading: true;
+  isSuccess: false;
+  isExecuted: false;
+}
+
+interface SuccessState<T> {
+  status: 'success';
+  data: T;
+  error: null;
+  loading: false;
+  isSuccess: true;
+  isExecuted: true;
+}
+
+interface ErrorState {
+  status: 'error';
+  data: null;
+  error: AppError;
+  loading: false;
+  isSuccess: false;
+  isExecuted: true;
+}
+
+type AsyncState<T> = IdleState | LoadingState | SuccessState<T> | ErrorState;
+
+export type UseAsyncReturn<T> = AsyncState<T> & {
+  /** Error message string (only populated if status is 'error') */
   errorMessage: string;
-  /** Whether the operation completed successfully */
-  isSuccess: boolean;
-  /** Whether the operation has been executed at least once */
-  isExecuted: boolean;
   /** Execute the async function with optional arguments */
   execute: <Args extends any[]>(...args: Args) => Promise<T>;
-  /** Reset to initial state */
+  /** Reset to idle state */
   reset: () => void;
-}
+};
 
 /**
  * Hook for managing async operations with automatic state management
- * Handles loading, error, and data states automatically
+ * Uses discriminated unions to ensure type-safe state combinations
  *
  * @example
  * ```typescript
  * // Simple data fetching
- * const { data, loading, error, execute } = useAsync(
- *   async () => await fetchUsers()
+ * const state = useAsync(async () => await fetchUsers());
+ *
+ * // Check status to narrow types
+ * if (state.status === 'success') {
+ *   console.log(state.data); // data is T here
+ * } else if (state.status === 'error') {
+ *   console.log(state.error); // error is AppError here
+ * }
+ *
+ * // Or use with autoRun
+ * const { status, data, error } = useAsync(
+ *   async () => await fetchUsers(),
+ *   { autoRun: true }
  * );
  *
- * useEffect(() => {
- *   execute();
- * }, []);
- *
- * // Form submission
- * const { execute, loading, error } = useAsync(
+ * // Form submission with retries
+ * const state = useAsync(
  *   async (formData) => await submitForm(formData),
  *   { retries: 2 }
  * );
  *
- * const handleSubmit = async (data) => {
- *   try {
- *     const result = await execute(data);
- *   } catch (err) {
- *     // Error is already in state
- *   }
- * };
+ * if (state.status === 'loading') {
+ *   return <p>Submitting...</p>;
+ * }
+ *
+ * if (state.status === 'error') {
+ *   return <ErrorAlert message={state.error.message} />;
+ * }
+ *
+ * if (state.status === 'success') {
+ *   return <p>Success! {state.data}</p>;
+ * }
  * ```
  */
 export function useAsync<T>(
@@ -65,10 +108,15 @@ export function useAsync<T>(
 ): UseAsyncReturn<T> {
   const { autoRun = false, retries = 0, retryDelay = 1000 } = options;
 
-  const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<AppError | null>(null);
-  const [isExecuted, setIsExecuted] = useState(false);
+  const [state, setState] = useState<AsyncState<T>>({
+    status: 'idle',
+    data: null,
+    error: null,
+    loading: false,
+    isSuccess: false,
+    isExecuted: false,
+  });
+
   const isMountedRef = useRef(true);
 
   // Clean up on unmount
@@ -91,15 +139,28 @@ export function useAsync<T>(
             throw new Error('Component unmounted');
           }
 
-          setLoading(true);
-          setError(null);
+          if (isMountedRef.current) {
+            setState({
+              status: 'loading',
+              data: null,
+              error: null,
+              loading: true,
+              isSuccess: false,
+              isExecuted: false,
+            });
+          }
 
           const result = await asyncFn(...args);
 
           if (isMountedRef.current) {
-            setData(result);
-            setError(null);
-            setIsExecuted(true);
+            setState({
+              status: 'success',
+              data: result,
+              error: null,
+              loading: false,
+              isSuccess: true,
+              isExecuted: true,
+            });
           }
 
           return result;
@@ -116,9 +177,14 @@ export function useAsync<T>(
       // All retries exhausted
       const parsedError = parseError(lastError);
       if (isMountedRef.current) {
-        setError(parsedError);
-        setIsExecuted(true);
-        setLoading(false);
+        setState({
+          status: 'error',
+          data: null,
+          error: parsedError,
+          loading: false,
+          isSuccess: false,
+          isExecuted: true,
+        });
       }
 
       throw parsedError;
@@ -127,13 +193,17 @@ export function useAsync<T>(
   );
 
   /**
-   * Reset to initial state
+   * Reset to idle state
    */
   const reset = useCallback(() => {
-    setData(null);
-    setLoading(false);
-    setError(null);
-    setIsExecuted(false);
+    setState({
+      status: 'idle',
+      data: null,
+      error: null,
+      loading: false,
+      isSuccess: false,
+      isExecuted: false,
+    });
   }, []);
 
   /**
@@ -145,14 +215,12 @@ export function useAsync<T>(
     }
   }, [autoRun, executeWithRetry]);
 
+  const errorMessage = state.status === 'error' ? getErrorMessage(state.error) : '';
+
   return {
-    data,
-    loading,
-    error,
-    errorMessage: error ? getErrorMessage(error) : '',
-    isSuccess: isExecuted && !error && data !== null,
-    isExecuted,
+    ...state,
+    errorMessage,
     execute: executeWithRetry,
     reset,
-  };
+  } as UseAsyncReturn<T>;
 }
