@@ -13,15 +13,33 @@ var db *sql.DB
 
 func initDatabase() error {
 	var err error
-	db, err = sql.Open("sqlite", "./keurope.db")
+	// Open database with concurrency options
+	db, err = sql.Open("sqlite", "./keurope.db?cache=shared&mode=rwc&_journal_mode=WAL&_busy_timeout=5000")
 	if err != nil {
 		return fmt.Errorf("failed to open database: %w", err)
 	}
+
+	// Configure connection pool for concurrency
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(5 * time.Minute)
 
 	// Test connection
 	err = db.Ping()
 	if err != nil {
 		return fmt.Errorf("failed to ping database: %w", err)
+	}
+
+	// Enable WAL mode for better concurrency (if not already set in connection string)
+	_, err = db.Exec("PRAGMA journal_mode=WAL;")
+	if err != nil {
+		return fmt.Errorf("failed to enable WAL mode: %w", err)
+	}
+
+	// Set busy timeout to 5 seconds
+	_, err = db.Exec("PRAGMA busy_timeout=5000;")
+	if err != nil {
+		return fmt.Errorf("failed to set busy timeout: %w", err)
 	}
 
 	// Create tables if they don't exist
@@ -36,8 +54,7 @@ func initDatabase() error {
 		return fmt.Errorf("failed to seed data: %w", err)
 	}
 
-
-	fmt.Println("✅ Database connected")
+	fmt.Println("✅ Database connected (WAL mode, 5s timeout, connection pool: 25 max)")
 	return nil
 }
 
