@@ -63,10 +63,7 @@ func main() {
 	protected.HandleFunc("/orders/all", getAllOrdersHandler).Methods("GET")
 
 	// Swagger API documentation (public)
-	router.PathPrefix("/docs").Handler(httpSwagger.WrapHandler)
-	router.HandleFunc("/docs.json", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./docs/swagger.json")
-	})
+	router.PathPrefix("/docs/").Handler(httpSwagger.WrapHandler)
 
 	// Apply CORS middleware to all routes
 	handler := corsMiddleware(router)
