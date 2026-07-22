@@ -84,14 +84,20 @@ export function AdminDashboard() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-12">
-        {/* Add Product Button */}
-        <div className="mb-8">
+        {/* Action Buttons */}
+        <div className="mb-8 flex gap-4">
           <Link
             to="/admin/add-product"
             className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition-colors"
           >
             <Plus className="size-5" />
             Add New Product
+          </Link>
+          <Link
+            to="/admin/orders"
+            className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition-colors"
+          >
+            📦 View Orders
           </Link>
         </div>
 
