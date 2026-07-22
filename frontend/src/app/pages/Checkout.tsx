@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { API_BASE } from '../config/api';
 
 export function Checkout() {
-  const { items, total, clearCart } = useCart();
+  const { items, total, clearCart, loadCart } = useCart();
   const { token } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -68,6 +68,7 @@ export function Checkout() {
 
       try {
         await clearCart();
+        await loadCart();
       } catch (cartErr) {
         console.error('Cart clearing failed:', cartErr);
         throw new Error('Order created but cart failed to clear. Please refresh the page.');

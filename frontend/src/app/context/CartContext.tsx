@@ -27,6 +27,7 @@ interface CartContextType {
   removeFromCart: (cartId: string) => Promise<void>;
   updateQuantity: (cartId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
+  loadCart: () => Promise<void>;
   totalItems: number;
   totalPrice: number;
   total: number;
@@ -184,6 +185,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         removeFromCart,
         updateQuantity,
         clearCart,
+        loadCart,
         totalItems,
         totalPrice,
         total: totalPrice,
