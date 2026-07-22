@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { API_BASE } from '../config/api';
+import { cartAPI } from '../services/api';
 
 export interface Product {
   id: string;
@@ -55,14 +55,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE}/cart`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCart(data.items || []);
-      }
+      const data = await cartAPI.get(token) as any;
+      setCart(data.items || []);
     } catch (err) {
       console.error('Failed to load cart:', err);
     } finally {
@@ -74,27 +68,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!token) return;
 
     try {
-      const response = await fetch(`${API_BASE}/cart`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ product_id: product.id, quantity }),
+      const data = await cartAPI.add(token, product.id, quantity) as any;
+      setCart((prev) => {
+        const existing = prev.find((item) => item.product_id === product.id);
+        if (existing) {
+          return prev.map((item) =>
+            item.product_id === product.id ? { ...item, quantity: data.quantity } : item
+          );
+        }
+        return [...prev, data];
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCart((prev) => {
-          const existing = prev.find((item) => item.product_id === product.id);
-          if (existing) {
-            return prev.map((item) =>
-              item.product_id === product.id ? { ...item, quantity: data.quantity } : item
-            );
-          }
-          return [...prev, data];
-        });
-      }
     } catch (err) {
       console.error('Failed to add to cart:', err);
       throw err;
@@ -105,14 +88,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!token) return;
 
     try {
-      const response = await fetch(`${API_BASE}/cart/${cartId}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (response.ok) {
-        setCart((prev) => prev.filter((item) => item.id !== cartId));
-      }
+      await cartAPI.remove(token, cartId);
+      setCart((prev) => prev.filter((item) => item.id !== cartId));
     } catch (err) {
       console.error('Failed to remove from cart:', err);
       throw err;
@@ -128,21 +105,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/cart/${cartId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ quantity }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCart((prev) =>
-          prev.map((item) => (item.id === cartId ? { ...item, quantity: data.quantity } : item))
-        );
-      }
+      const data = await cartAPI.updateQuantity(token, cartId, quantity) as any;
+      setCart((prev) =>
+        prev.map((item) => (item.id === cartId ? { ...item, quantity: data.quantity } : item))
+      );
     } catch (err) {
       console.error('Failed to update quantity:', err);
       throw err;
@@ -153,16 +119,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!token) return;
 
     try {
-      const response = await fetch(`${API_BASE}/cart/clear`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(text || 'Failed to clear cart');
-      }
-
+      await cartAPI.clear(token);
       setCart([]);
     } catch (err) {
       console.error('Failed to clear cart:', err);

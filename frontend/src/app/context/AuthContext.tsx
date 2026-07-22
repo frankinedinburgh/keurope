@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { API_BASE } from '../config/api';
+import { authAPI } from '../services/api';
 import { STORAGE_KEYS } from '../config/constants';
 
 export interface User {
@@ -38,53 +38,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchUser = async (authToken: string) => {
     try {
-      const response = await fetch(`${API_BASE}/auth/me`, {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-      } else {
-        localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-        setToken(null);
-      }
+      const userData = await authAPI.getMe(authToken);
+      setUser(userData);
     } catch (err) {
       console.error('Failed to fetch user:', err);
+      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+      setToken(null);
     } finally {
       setLoading(false);
     }
   };
 
   const register = async (email: string, password: string) => {
-    const response = await fetch(`${API_BASE}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(error);
-    }
-
-    const data = await response.json();
+    const data = await authAPI.register(email, password);
     setToken(data.token);
     setUser(data.user);
     localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, data.token);
   };
 
   const login = async (email: string, password: string) => {
-    const response = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Invalid email or password');
-    }
-
-    const data = await response.json();
+    const data = await authAPI.login(email, password);
     setToken(data.token);
     setUser(data.user);
     localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, data.token);
