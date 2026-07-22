@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router';
 import { ProductCard } from '../components/ProductCard';
 import { getProducts } from '../services/api';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import { useAsync } from '../hooks/useAsync';
+import { ErrorAlert } from '../components/ErrorAlert';
 
 const PRODUCTS_PER_PAGE = 12;
 
@@ -12,12 +14,17 @@ export function Shop() {
 
   const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam || 'All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [allProducts, setAllProducts] = useState<any[]>([]);
   const [displayedCount, setDisplayedCount] = useState(PRODUCTS_PER_PAGE);
-  const [loading, setLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  // Fetch products with useAsync
+  const productState = useAsync(
+    async () => await getProducts(),
+    { autoRun: true }
+  );
+  const allProducts = productState.data || [];
+  const { loading, errorMessage } = productState;
 
   // Update selectedCategory when URL parameter changes
   useEffect(() => {
@@ -25,27 +32,9 @@ export function Shop() {
     setDisplayedCount(PRODUCTS_PER_PAGE);
   }, [categoryParam]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const data = await getProducts();
-        setAllProducts(data);
-        setError(null);
-      } catch (err) {
-        setError('Failed to load products');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
   const categories = ['All', ...Array.from(new Set(allProducts.map((p) => p.category)))];
 
-  const filteredProducts = useMemo(() => {
+  const filteredProducts = useMemo((): typeof allProducts => {
     let results = allProducts;
 
     // Filter by category
@@ -103,10 +92,12 @@ export function Shop() {
     );
   }
 
-  if (error) {
+  if (errorMessage) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-red-600">{error}</p>
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-md w-full">
+          <ErrorAlert message={errorMessage} />
+        </div>
       </div>
     );
   }
