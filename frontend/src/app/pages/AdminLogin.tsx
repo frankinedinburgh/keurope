@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { STORAGE_KEYS } from '../config/constants';
 
 export function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -7,7 +8,8 @@ export function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const ADMIN_PASSWORD = 'keurope2024'; // Change this to your password
+  // Get admin password from environment variable
+  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +19,7 @@ export function AdminLogin() {
     // Simple password check
     if (password === ADMIN_PASSWORD) {
       // Store admin session in localStorage
-      localStorage.setItem('adminAuth', 'true');
+      localStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true');
       navigate('/admin/dashboard');
     } else {
       setError('Incorrect password');

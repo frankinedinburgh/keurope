@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { Plus, LogOut, Edit, Trash2 } from 'lucide-react';
 import { getProducts } from '../services/api';
+import { STORAGE_KEYS } from '../config/constants';
 
 export function AdminDashboard() {
   const [allProducts, setAllProducts] = useState<any[]>([]);
@@ -13,7 +14,7 @@ export function AdminDashboard() {
 
   // Check admin auth
   useEffect(() => {
-    const isAdmin = localStorage.getItem('adminAuth');
+    const isAdmin = localStorage.getItem(STORAGE_KEYS.ADMIN_AUTH);
     if (!isAdmin) {
       navigate('/admin/login');
     }
@@ -76,7 +77,7 @@ export function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('adminAuth');
+    localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
     navigate('/admin/login');
   };
 

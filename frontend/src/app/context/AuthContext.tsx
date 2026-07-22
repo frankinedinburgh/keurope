@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { API_BASE } from '../config/api';
+import { STORAGE_KEYS } from '../config/constants';
 
 export interface User {
   id: string;
@@ -26,7 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Load token from localStorage on mount
   useEffect(() => {
-    const savedToken = localStorage.getItem('auth_token');
+    const savedToken = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
     if (savedToken) {
       setToken(savedToken);
       fetchUser(savedToken);
@@ -44,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const userData = await response.json();
         setUser(userData);
       } else {
-        localStorage.removeItem('auth_token');
+        localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
         setToken(null);
       }
     } catch (err) {
@@ -69,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const data = await response.json();
     setToken(data.token);
     setUser(data.user);
-    localStorage.setItem('auth_token', data.token);
+    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, data.token);
   };
 
   const login = async (email: string, password: string) => {
@@ -86,13 +87,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const data = await response.json();
     setToken(data.token);
     setUser(data.user);
-    localStorage.setItem('auth_token', data.token);
+    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, data.token);
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
   };
 
   const value: AuthContextType = {

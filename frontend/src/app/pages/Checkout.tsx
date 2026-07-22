@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { ArrowLeft, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { API_BASE } from '../config/api';
 
 export function Checkout() {
   const { items, total, clearCart } = useCart();
+  const { token } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -33,7 +35,6 @@ export function Checkout() {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('Please login to place an order');
       }

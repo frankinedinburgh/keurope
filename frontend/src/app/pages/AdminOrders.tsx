@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { API_BASE } from '../config/api';
+import { STORAGE_KEYS } from '../config/constants';
 
 export function AdminOrders() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export function AdminOrders() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const isAdmin = localStorage.getItem('adminAuth');
+    const isAdmin = localStorage.getItem(STORAGE_KEYS.ADMIN_AUTH);
     if (!isAdmin) {
       navigate('/admin/login');
       return;
