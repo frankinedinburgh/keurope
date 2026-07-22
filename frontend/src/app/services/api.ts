@@ -1,4 +1,5 @@
 import { API_BASE } from '../config/api';
+import { handleAPIError, logError } from '../lib/errors';
 
 // ============================================================================
 // Types
@@ -106,17 +107,22 @@ async function fetchAPI<T>(
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...fetchOptions,
-    headers,
-  });
+  try {
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+      ...fetchOptions,
+      headers,
+    });
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || `API Error: ${response.status}`);
+    if (!response.ok) {
+      const text = await response.text();
+      handleAPIError(response.status, text);
+    }
+
+    return response.json();
+  } catch (error) {
+    logError(error, `API Call: ${options.method || 'GET'} ${endpoint}`);
+    throw error;
   }
-
-  return response.json();
 }
 
 // ============================================================================

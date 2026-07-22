@@ -1,25 +1,27 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { useAuth } from '../context/AuthContext';
+import { useError } from '../hooks/useError';
+import { ErrorAlert } from '../components/ErrorAlert';
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const { errorMessage, handleError, clearError } = useError();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    clearError();
     setLoading(true);
 
     try {
       await login(email, password);
       navigate('/shop');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      handleError(err, 'Login');
     } finally {
       setLoading(false);
     }
@@ -35,10 +37,8 @@ export function Login() {
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm font-medium text-red-800">{error}</p>
-            </div>
+          {errorMessage && (
+            <ErrorAlert message={errorMessage} onDismiss={clearError} />
           )}
 
           <div className="space-y-4">
