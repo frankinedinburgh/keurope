@@ -1,6 +1,94 @@
 import { API_BASE } from '../config/api';
 
 // ============================================================================
+// Types
+// ============================================================================
+
+export interface User {
+  id: string;
+  email: string;
+  created_at: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: User;
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  description?: string;
+  price: number;
+  category: string;
+  image_url: string;
+  sizes?: string[];
+}
+
+export interface CartItem {
+  id: string;
+  user_id: string;
+  product_id: string;
+  quantity: number;
+  product?: Product;
+}
+
+export interface CartResponse {
+  items: CartItem[];
+  total: number;
+}
+
+export interface Order {
+  id: string;
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  address: string;
+  city: string;
+  postal_code: string;
+  country: string;
+  total_price: number;
+  status: 'pending' | 'shipped' | 'delivered';
+  created_at: string;
+}
+
+interface ApiResponse<T> {
+  status: string;
+  data?: T;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface CreateOrderRequest {
+  first_name: string;
+  last_name: string;
+  email: string;
+  address: string;
+  city: string;
+  postal_code: string;
+  country: string;
+  items: CartItem[];
+  total_price: number;
+}
+
+interface ProductsListResponse {
+  items: Product[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+interface CreateOrderResponse {
+  order_id: string;
+}
+
+// ============================================================================
 // Utility Functions
 // ============================================================================
 
@@ -36,28 +124,28 @@ async function fetchAPI<T>(
 // ============================================================================
 
 export const authAPI = {
-  register: async (email: string, password: string) =>
+  register: async (email: string, password: string): Promise<AuthResponse> =>
     fetchAPI('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),
 
-  login: async (email: string, password: string) =>
+  login: async (email: string, password: string): Promise<AuthResponse> =>
     fetchAPI('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),
 
-  getMe: async (token: string) =>
+  getMe: async (token: string): Promise<User> =>
     fetchAPI('/auth/me', { token, method: 'GET' }),
 
-  forgotPassword: async (email: string) =>
+  forgotPassword: async (email: string): Promise<{ status: string; message: string }> =>
     fetchAPI('/auth/forgot-password', {
       method: 'POST',
       body: JSON.stringify({ email }),
     }),
 
-  resetPassword: async (token: string, newPassword: string) =>
+  resetPassword: async (token: string, newPassword: string): Promise<{ status: string; message: string }> =>
     fetchAPI('/auth/reset-password', {
       method: 'POST',
       body: JSON.stringify({ reset_token: token, new_password: newPassword }),
@@ -69,40 +157,40 @@ export const authAPI = {
 // ============================================================================
 
 export const productsAPI = {
-  getAll: async (category?: string) => {
+  getAll: async (category?: string): Promise<Product[]> => {
     const params = new URLSearchParams();
     if (category) params.append('category', category);
-    const data = await fetchAPI<any>(`/products?${params}`);
+    const data = await fetchAPI<ApiResponse<ProductsListResponse>>(`/products?${params}`);
     return data.data?.items || [];
   },
 
-  getById: async (id: string) => {
-    const data = await fetchAPI<any>(`/products/${id}`);
-    return data.data;
+  getById: async (id: string): Promise<Product> => {
+    const data = await fetchAPI<ApiResponse<Product>>(`/products/${id}`);
+    return data.data || ({} as Product);
   },
 
-  create: async (token: string, product: any) =>
+  create: async (token: string, product: Omit<Product, 'id'>): Promise<Product> =>
     fetchAPI('/products', {
       method: 'POST',
       token,
       body: JSON.stringify(product),
     }),
 
-  update: async (token: string, id: string, product: any) =>
+  update: async (token: string, id: string, product: Partial<Product>): Promise<Product> =>
     fetchAPI(`/products/${id}`, {
       method: 'PUT',
       token,
       body: JSON.stringify(product),
     }),
 
-  delete: async (token: string, id: string) =>
+  delete: async (token: string, id: string): Promise<{ status: string }> =>
     fetchAPI(`/products/${id}`, {
       method: 'DELETE',
       token,
     }),
 
-  getCategories: async () => {
-    const data = await fetchAPI<any>('/categories');
+  getCategories: async (): Promise<string[]> => {
+    const data = await fetchAPI<ApiResponse<string[]>>('/categories');
     return data.data || [];
   },
 };
@@ -112,32 +200,30 @@ export const productsAPI = {
 // ============================================================================
 
 export const cartAPI = {
-  get: async (token: string) => {
-    const data = await fetchAPI('/cart', { token, method: 'GET' });
-    return data;
-  },
+  get: async (token: string): Promise<CartResponse> =>
+    fetchAPI('/cart', { token, method: 'GET' }),
 
-  add: async (token: string, productId: string, quantity: number) =>
+  add: async (token: string, productId: string, quantity: number): Promise<CartItem> =>
     fetchAPI('/cart', {
       method: 'POST',
       token,
       body: JSON.stringify({ product_id: productId, quantity }),
     }),
 
-  updateQuantity: async (token: string, cartId: string, quantity: number) =>
+  updateQuantity: async (token: string, cartId: string, quantity: number): Promise<CartItem> =>
     fetchAPI(`/cart/${cartId}`, {
       method: 'PUT',
       token,
       body: JSON.stringify({ quantity }),
     }),
 
-  remove: async (token: string, cartId: string) =>
+  remove: async (token: string, cartId: string): Promise<{ status: string }> =>
     fetchAPI(`/cart/${cartId}`, {
       method: 'DELETE',
       token,
     }),
 
-  clear: async (token: string) =>
+  clear: async (token: string): Promise<{ status: string }> =>
     fetchAPI('/cart/clear', {
       method: 'DELETE',
       token,
@@ -149,20 +235,20 @@ export const cartAPI = {
 // ============================================================================
 
 export const ordersAPI = {
-  create: async (token: string, orderData: any) =>
-    fetchAPI<any>('/orders', {
+  create: async (token: string, orderData: CreateOrderRequest): Promise<ApiResponse<CreateOrderResponse>> =>
+    fetchAPI('/orders', {
       method: 'POST',
       token,
       body: JSON.stringify(orderData),
     }),
 
-  getUser: async (token: string) => {
-    const data = await fetchAPI<any>('/orders', { token, method: 'GET' });
+  getUser: async (token: string): Promise<Order[]> => {
+    const data = await fetchAPI<ApiResponse<Order[]>>('/orders', { token, method: 'GET' });
     return data.data || [];
   },
 
-  getAll: async (token: string) => {
-    const data = await fetchAPI<any>('/orders/all', { token, method: 'GET' });
+  getAll: async (token: string): Promise<Order[]> => {
+    const data = await fetchAPI<ApiResponse<Order[]>>('/orders/all', { token, method: 'GET' });
     return data.data || [];
   },
 };
@@ -172,7 +258,7 @@ export const ordersAPI = {
 // ============================================================================
 
 export const adminAPI = {
-  login: async (password: string) =>
+  login: async (password: string): Promise<{ token: string }> =>
     fetchAPI('/admin/login', {
       method: 'POST',
       body: JSON.stringify({ password }),
@@ -180,6 +266,6 @@ export const adminAPI = {
 };
 
 // Legacy function for backwards compatibility
-export async function getProducts(category?: string) {
+export async function getProducts(category?: string): Promise<Product[]> {
   return productsAPI.getAll(category);
 }

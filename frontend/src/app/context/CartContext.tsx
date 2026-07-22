@@ -1,24 +1,8 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { cartAPI } from '../services/api';
+import { cartAPI, CartItem, Product } from '../services/api';
 
-export interface Product {
-  id: string;
-  title: string;
-  price: number;
-  image_url: string;
-  category: string;
-  description?: string;
-  sizes?: string[];
-}
-
-export interface CartItem {
-  id: string;
-  user_id: string;
-  product_id: string;
-  quantity: number;
-  product?: Product;
-}
+export type { Product, CartItem };
 
 interface CartContextType {
   cart: CartItem[];
@@ -55,8 +39,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     try {
       setLoading(true);
-      const data = await cartAPI.get(token) as any;
-      setCart(data.items || []);
+      const data = await cartAPI.get(token);
+      setCart(data.items);
     } catch (err) {
       console.error('Failed to load cart:', err);
     } finally {
@@ -68,7 +52,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!token) return;
 
     try {
-      const data = await cartAPI.add(token, product.id, quantity) as any;
+      const data = await cartAPI.add(token, product.id, quantity);
       setCart((prev) => {
         const existing = prev.find((item) => item.product_id === product.id);
         if (existing) {
@@ -105,7 +89,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const data = await cartAPI.updateQuantity(token, cartId, quantity) as any;
+      const data = await cartAPI.updateQuantity(token, cartId, quantity);
       setCart((prev) =>
         prev.map((item) => (item.id === cartId ? { ...item, quantity: data.quantity } : item))
       );

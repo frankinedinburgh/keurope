@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router';
 import { ArrowLeft, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { ordersAPI } from '../services/api';
+import { ordersAPI, CreateOrderRequest } from '../services/api';
 
 export function Checkout() {
   const { items, total, clearCart, loadCart } = useCart();
@@ -39,7 +39,7 @@ export function Checkout() {
         throw new Error('Please login to place an order');
       }
 
-      const data = await ordersAPI.create(token, {
+      const orderRequest: CreateOrderRequest = {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
@@ -49,9 +49,10 @@ export function Checkout() {
         country: formData.country,
         items: items,
         total_price: total,
-      }) as any;
+      };
 
-      setOrderID(data.data.order_id);
+      const data = await ordersAPI.create(token, orderRequest);
+      setOrderID(data.data?.order_id || '');
 
       try {
         await clearCart();
