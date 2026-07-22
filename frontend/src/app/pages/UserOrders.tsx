@@ -1,39 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { ordersAPI } from '../services/api';
+import { ordersAPI, Order } from '../services/api';
+import { useAsync } from '../hooks/useAsync';
+import { ErrorAlert } from '../components/ErrorAlert';
 
 export function UserOrders() {
   const navigate = useNavigate();
   const { user, token } = useAuth();
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { data: orders = [], loading, errorMessage, execute, reset } = useAsync<Order[]>(
+    async () => {
+      if (!token) throw new Error('Token not available');
+      return ordersAPI.getUser(token);
+    }
+  );
 
   useEffect(() => {
     if (!user || !token) {
       navigate('/login');
       return;
     }
-    fetchOrders();
+    execute();
   }, [user, token, navigate]);
-
-  const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      if (!token) {
-        throw new Error('Token not available');
-      }
-      const data = await ordersAPI.getUser(token);
-      setOrders(data);
-      setError('');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load orders');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -85,9 +74,9 @@ export function UserOrders() {
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-4 py-12">
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded p-4 mb-6">
-            <p className="text-red-800">{error}</p>
+        {errorMessage && (
+          <div className="mb-6">
+            <ErrorAlert message={errorMessage} onDismiss={reset} />
           </div>
         )}
 
