@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router';
 import { ArrowLeft, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { API_BASE } from '../config/api';
+import { ordersAPI } from '../services/api';
 
 export function Checkout() {
   const { items, total, clearCart, loadCart } = useCart();
@@ -39,31 +39,18 @@ export function Checkout() {
         throw new Error('Please login to place an order');
       }
 
-      const response = await fetch(`${API_BASE}/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          address: formData.address,
-          city: formData.city,
-          postal_code: formData.postalCode,
-          country: formData.country,
-          items: items,
-          total_price: total,
-        }),
-      });
+      const data = await ordersAPI.create(token, {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        address: formData.address,
+        city: formData.city,
+        postal_code: formData.postalCode,
+        country: formData.country,
+        items: items,
+        total_price: total,
+      }) as any;
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error?.message || 'Failed to create order');
-      }
-
-      const data = await response.json();
       setOrderID(data.data.order_id);
 
       try {

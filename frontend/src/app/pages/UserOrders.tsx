@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { API_BASE } from '../config/api';
+import { ordersAPI } from '../services/api';
 
 export function UserOrders() {
   const navigate = useNavigate();
@@ -22,16 +22,11 @@ export function UserOrders() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE}/orders`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to load orders');
+      if (!token) {
+        throw new Error('Token not available');
       }
-
-      const data = await response.json();
-      setOrders(data.data || []);
+      const data = await ordersAPI.getUser(token);
+      setOrders(data);
       setError('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load orders');
