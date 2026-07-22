@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router';
 import { ProductCard } from '../components/ProductCard';
 import { getProducts } from '../services/api';
@@ -19,10 +19,8 @@ export function Shop() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   // Fetch products with useAsync
-  const productState = useAsync(
-    async () => await getProducts(),
-    { autoRun: true }
-  );
+  const fetchProductsCallback = useCallback(() => getProducts(), []);
+  const productState = useAsync(fetchProductsCallback, { autoRun: true });
   const allProducts = productState.data || [];
   const { loading, errorMessage } = productState;
 
