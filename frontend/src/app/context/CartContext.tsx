@@ -22,12 +22,14 @@ export interface CartItem {
 
 interface CartContextType {
   cart: CartItem[];
+  items: CartItem[];
   addToCart: (product: Product, quantity: number) => Promise<void>;
   removeFromCart: (cartId: string) => Promise<void>;
   updateQuantity: (cartId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
   totalItems: number;
   totalPrice: number;
+  total: number;
   loading: boolean;
 }
 
@@ -174,12 +176,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     <CartContext.Provider
       value={{
         cart,
+        items: cart,
         addToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
         totalItems,
         totalPrice,
+        total: totalPrice,
         loading,
       }}
     >

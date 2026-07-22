@@ -64,11 +64,10 @@ export function Checkout() {
 
       const data = await response.json();
       setOrderID(data.data.order_id);
+      await clearCart();
       setOrderComplete(true);
-      clearCart();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to place order');
-    } finally {
       setLoading(false);
     }
   };
