@@ -10,6 +10,7 @@ export function Shop() {
   const categoryParam = searchParams.get('category');
 
   const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam || 'All');
+  const [searchTerm, setSearchTerm] = useState('');
   const [allProducts, setAllProducts] = useState<any[]>([]);
   const [displayedCount, setDisplayedCount] = useState(PRODUCTS_PER_PAGE);
   const [loading, setLoading] = useState(true);
@@ -44,11 +45,24 @@ export function Shop() {
   const categories = ['All', ...Array.from(new Set(allProducts.map((p) => p.category)))];
 
   const filteredProducts = useMemo(() => {
-    if (selectedCategory === 'All') {
-      return allProducts;
+    let results = allProducts;
+
+    // Filter by category
+    if (selectedCategory !== 'All') {
+      results = results.filter((p) => p.category === selectedCategory);
     }
-    return allProducts.filter((p) => p.category === selectedCategory);
-  }, [selectedCategory, allProducts]);
+
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      results = results.filter((p) =>
+        p.title.toLowerCase().includes(term) ||
+        (p.description && p.description.toLowerCase().includes(term))
+      );
+    }
+
+    return results;
+  }, [selectedCategory, searchTerm, allProducts]);
 
   const displayedProducts = useMemo(() => {
     return filteredProducts.slice(0, displayedCount);
@@ -112,6 +126,20 @@ export function Shop() {
           <p className="text-sm md:text-base text-neutral-600">
             {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
           </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-8">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setDisplayedCount(PRODUCTS_PER_PAGE);
+            }}
+            className="w-full px-4 py-3 border border-neutral-300 rounded-md focus:border-black focus:outline-none text-sm md:text-base"
+          />
         </div>
 
         {/* Filters */}
