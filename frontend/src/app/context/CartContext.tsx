@@ -159,8 +159,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error?.message || 'Failed to clear cart');
+        const text = await response.text();
+        throw new Error(text || 'Failed to clear cart');
       }
 
       setCart([]);
