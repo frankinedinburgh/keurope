@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"math/rand"
+	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -237,6 +239,44 @@ func createTables() error {
 		return fmt.Errorf("failed to create password_reset_tokens table: %w", err)
 	}
 
+	ordersQuery := `
+	CREATE TABLE IF NOT EXISTS orders (
+		id TEXT PRIMARY KEY,
+		user_id TEXT NOT NULL,
+		total_price REAL NOT NULL,
+		status TEXT DEFAULT 'pending',
+		first_name TEXT NOT NULL,
+		last_name TEXT NOT NULL,
+		email TEXT NOT NULL,
+		address TEXT NOT NULL,
+		city TEXT NOT NULL,
+		postal_code TEXT NOT NULL,
+		country TEXT NOT NULL,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (user_id) REFERENCES users(id)
+	)
+	`
+	_, err = db.Exec(ordersQuery)
+	if err != nil {
+		return fmt.Errorf("failed to create orders table: %w", err)
+	}
+
+	orderItemsQuery := `
+	CREATE TABLE IF NOT EXISTS order_items (
+		id TEXT PRIMARY KEY,
+		order_id TEXT NOT NULL,
+		product_id TEXT NOT NULL,
+		quantity INTEGER NOT NULL,
+		price REAL NOT NULL,
+		FOREIGN KEY (order_id) REFERENCES orders(id),
+		FOREIGN KEY (product_id) REFERENCES products(id)
+	)
+	`
+	_, err = db.Exec(orderItemsQuery)
+	if err != nil {
+		return fmt.Errorf("failed to create order_items table: %w", err)
+	}
+
 	return nil
 }
 
@@ -263,18 +303,86 @@ func seedData() error {
         deleteQuery := "DELETE FROM products"
         db.Exec(deleteQuery)
     }
-    
+
     // Insert initial products
     for _, product := range products {  // Use the mock products from data.go
         _, err := db.Exec(
-            "INSERT INTO products (id, title, price, category, image_url) VALUES (?, ?, ?, ?, ?)",
-            product.ID, product.Title, product.Price, product.Category, product.ImageURL,
+            "INSERT INTO products (id, title, price, category, image_url, description) VALUES (?, ?, ?, ?, ?, ?)",
+            product.ID, product.Title, product.Price, product.Category, product.ImageURL, product.Description,
         )
         if err != nil {
             return fmt.Errorf("failed to insert product: %w", err)
         }
     }
-    
+
     return nil
+}
+
+func createOrder(userID string, firstName string, lastName string, email string, address string, city string, postalCode string, country string, totalPrice float64, items []CartItem) (string, error) {
+	orderID := fmt.Sprintf("order_%d_%d", time.Now().Unix(), rand.Intn(10000))
+
+	query := "INSERT INTO orders (id, user_id, first_name, last_name, email, address, city, postal_code, country, total_price, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	_, err := db.Exec(query, orderID, userID, firstName, lastName, email, address, city, postalCode, country, totalPrice, "pending")
+	if err != nil {
+		return "", fmt.Errorf("failed to create order: %w", err)
+	}
+
+	// Insert order items
+	for i, item := range items {
+		itemID := fmt.Sprintf("item_%s_%d", orderID, i)
+		price := 0.0
+		if item.Product != nil {
+			price = item.Product.Price
+		}
+		itemQuery := "INSERT INTO order_items (id, order_id, product_id, quantity, price) VALUES (?, ?, ?, ?, ?)"
+		_, err := db.Exec(itemQuery, itemID, orderID, item.ProductID, item.Quantity, price)
+		if err != nil {
+			return "", fmt.Errorf("failed to insert order item: %w", err)
+		}
+	}
+
+	return orderID, nil
+}
+
+func getOrdersByUserID(userID string) ([]Order, error) {
+	query := "SELECT id, user_id, total_price, status, first_name, last_name, email, created_at FROM orders WHERE user_id = ? ORDER BY created_at DESC"
+	rows, err := db.Query(query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("query error: %w", err)
+	}
+	defer rows.Close()
+
+	var orders []Order
+	for rows.Next() {
+		var o Order
+		err := rows.Scan(&o.ID, &o.UserID, &o.TotalPrice, &o.Status, &o.FirstName, &o.LastName, &o.Email, &o.CreatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("scan error: %w", err)
+		}
+		orders = append(orders, o)
+	}
+
+	return orders, nil
+}
+
+func getAllOrders() ([]Order, error) {
+	query := "SELECT id, user_id, total_price, status, first_name, last_name, email, created_at FROM orders ORDER BY created_at DESC"
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("query error: %w", err)
+	}
+	defer rows.Close()
+
+	var orders []Order
+	for rows.Next() {
+		var o Order
+		err := rows.Scan(&o.ID, &o.UserID, &o.TotalPrice, &o.Status, &o.FirstName, &o.LastName, &o.Email, &o.CreatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("scan error: %w", err)
+		}
+		orders = append(orders, o)
+	}
+
+	return orders, nil
 }
 

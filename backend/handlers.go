@@ -246,3 +246,152 @@ func deleteProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(response)
 }
+
+func createOrderHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	token := extractToken(r)
+	if token == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "UNAUTHORIZED",
+				Message: "Missing token",
+			},
+		})
+		return
+	}
+
+	claims, err := verifyToken(token)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "INVALID_TOKEN",
+				Message: "Invalid or expired token",
+			},
+		})
+		return
+	}
+
+	var req struct {
+		FirstName  string     `json:"first_name"`
+		LastName   string     `json:"last_name"`
+		Email      string     `json:"email"`
+		Address    string     `json:"address"`
+		City       string     `json:"city"`
+		PostalCode string     `json:"postal_code"`
+		Country    string     `json:"country"`
+		Items      []CartItem `json:"items"`
+		TotalPrice float64    `json:"total_price"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "INVALID_REQUEST",
+				Message: "Invalid request body",
+			},
+		})
+		return
+	}
+
+	orderID, err := createOrder(claims.UserID, req.FirstName, req.LastName, req.Email, req.Address, req.City, req.PostalCode, req.Country, req.TotalPrice, req.Items)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "DATABASE_ERROR",
+				Message: err.Error(),
+			},
+		})
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	response := ApiResponse{
+		Status: "success",
+		Data: map[string]string{
+			"order_id": orderID,
+		},
+	}
+	json.NewEncoder(w).Encode(response)
+}
+
+func getOrdersHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	token := extractToken(r)
+	if token == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "UNAUTHORIZED",
+				Message: "Missing token",
+			},
+		})
+		return
+	}
+
+	claims, err := verifyToken(token)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "INVALID_TOKEN",
+				Message: "Invalid or expired token",
+			},
+		})
+		return
+	}
+
+	orders, err := getOrdersByUserID(claims.UserID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "DATABASE_ERROR",
+				Message: err.Error(),
+			},
+		})
+		return
+	}
+
+	response := ApiResponse{
+		Status: "success",
+		Data:   orders,
+	}
+	json.NewEncoder(w).Encode(response)
+}
+
+func getAllOrdersHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	orders, err := getAllOrders()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ApiResponse{
+			Status: "error",
+			Error: ErrorResponse{
+				Code:    "DATABASE_ERROR",
+				Message: err.Error(),
+			},
+		})
+		return
+	}
+
+	response := ApiResponse{
+		Status: "success",
+		Data:   orders,
+	}
+	json.NewEncoder(w).Encode(response)
+}

@@ -56,6 +56,11 @@ func main() {
 	router.HandleFunc("/api/cart/{cartId}", updateCartQuantityHandler).Methods("PUT")
 	router.HandleFunc("/api/cart/clear", clearCartHandler).Methods("DELETE")
 
+	// Order routes (protected)
+	router.HandleFunc("/api/orders", createOrderHandler).Methods("POST")
+	router.HandleFunc("/api/orders", getOrdersHandler).Methods("GET")
+	router.HandleFunc("/api/orders/all", getAllOrdersHandler).Methods("GET")
+
 	// Apply CORS middleware to all routes
 	handler := corsMiddleware(router)
 
