@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router';
 import { Plus, LogOut, Edit, Trash2 } from 'lucide-react';
 import { getProducts } from '../services/api';
 import { STORAGE_KEYS } from '../config/constants';
+import { API_BASE } from '../config/api';
 
 export function AdminDashboard() {
   const [allProducts, setAllProducts] = useState<any[]>([]);
@@ -61,9 +62,6 @@ export function AdminDashboard() {
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
       try {
-        const API_BASE = process.env.NODE_ENV === 'development'
-          ? 'http://localhost:5000/api'
-          : 'https://api.k-europe.com/api';
         const response = await fetch(`${API_BASE}/products/${id}`, {
           method: 'DELETE',
         });

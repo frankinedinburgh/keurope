@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { ToastContainer } from './ToastContainer';
 
 export function Layout() {
   const { pathname } = useLocation();
@@ -17,6 +18,7 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <ToastContainer />
     </div>
   );
 }
