@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router';
 import { ProductCard } from '../components/ProductCard';
 import { getProducts } from '../services/api';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 
 const PRODUCTS_PER_PAGE = 12;
 
@@ -69,27 +70,20 @@ export function Shop() {
   }, [filteredProducts, displayedCount]);
 
   // Intersection Observer for infinite scroll
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoadingMore && displayedCount < filteredProducts.length) {
-          setIsLoadingMore(true);
-          // Simulate network delay for smooth UX
-          setTimeout(() => {
-            setDisplayedCount((prev) => Math.min(prev + PRODUCTS_PER_PAGE, filteredProducts.length));
-            setIsLoadingMore(false);
-          }, 300);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [displayedCount, isLoadingMore, filteredProducts.length]);
+  useInfiniteScroll(
+    loadMoreRef,
+    () => {
+      if (!isLoadingMore && displayedCount < filteredProducts.length) {
+        setIsLoadingMore(true);
+        // Simulate network delay for smooth UX
+        setTimeout(() => {
+          setDisplayedCount((prev) => Math.min(prev + PRODUCTS_PER_PAGE, filteredProducts.length));
+          setIsLoadingMore(false);
+        }, 300);
+      }
+    },
+    { threshold: 0.1 }
+  );
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
