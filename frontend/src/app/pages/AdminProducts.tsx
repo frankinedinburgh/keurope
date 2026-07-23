@@ -1,22 +1,17 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { ArrowLeft, Edit2, Trash2, Plus, X } from 'lucide-react';
+import { ArrowLeft, Edit2, Trash2, Plus } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import { useToast } from '../context/ToastContext';
 import { productsAPI, Product } from '../services/api';
 import { API_BASE } from '../config/api';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 
 type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc';
 
 export function AdminProducts() {
   const navigate = useNavigate();
   const { isAdmin, adminToken } = useAdmin();
-
-  if (!isAdmin) {
-    navigate('/admin/login');
-    return null;
-  }
-
   const { success, error: showError } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,6 +23,11 @@ export function AdminProducts() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
+
+  if (!isAdmin) {
+    navigate('/admin/login');
+    return null;
+  }
 
   useEffect(() => {
     loadProducts();
@@ -101,32 +101,35 @@ export function AdminProducts() {
       return;
     }
 
+    if (!editingId && !formData.image_url) {
+      showError('Please select an image');
+      return;
+    }
+
     try {
-      if (editingId) {
-        await fetch(`${API_BASE}/admin/products/${editingId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${adminToken}`,
-          },
-          body: JSON.stringify(formData),
-        });
-        success('Product updated');
-      } else {
-        await fetch(`${API_BASE}/products`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${adminToken}`,
-          },
-          body: JSON.stringify(formData),
-        });
-        success('Product created');
+      const endpoint = editingId ? `${API_BASE}/admin/products/${editingId}` : `${API_BASE}/admin/products`;
+      const method = editingId ? 'PUT' : 'POST';
+
+      const response = await fetch(endpoint, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
       }
+
+      success(editingId ? 'Product updated' : 'Product created');
       setEditingId(null);
       setShowAddForm(false);
-      loadProducts();
+      setFormData({});
+      await loadProducts();
     } catch (err) {
+      console.error('Save error:', err);
       showError(editingId ? 'Failed to update product' : 'Failed to create product');
     }
   };
@@ -169,25 +172,19 @@ export function AdminProducts() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Add/Edit Form */}
-        {showAddForm || editingId ? (
-          <div className="bg-white rounded-lg border p-8 mb-8">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">{editingId ? 'Edit Product' : 'Add New Product'}</h2>
-              <button
-                onClick={() => {
-                  setShowAddForm(false);
-                  setEditingId(null);
-                  setFormData({});
-                }}
-                className="text-neutral-600 hover:text-black"
-              >
-                <X className="size-5" />
-              </button>
-            </div>
+      <Dialog open={showAddForm || !!editingId} onOpenChange={(open) => {
+        if (!open) {
+          setShowAddForm(false);
+          setEditingId(null);
+          setFormData({});
+        }
+      }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{editingId ? 'Edit Product' : 'Add New Product'}</DialogTitle>
+          </DialogHeader>
 
-            <div className="space-y-4">
+          <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Title *</label>
                 <input
@@ -213,13 +210,16 @@ export function AdminProducts() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Category *</label>
-                  <input
-                    type="text"
-                    placeholder="Category"
+                  <select
                     value={formData.category || ''}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black"
-                  />
+                    className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black cursor-pointer"
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map(cat => cat !== 'All' && (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -235,12 +235,20 @@ export function AdminProducts() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Image URL</label>
+                <label className="block text-sm font-medium mb-2">Product Image *</label>
                 <input
-                  type="url"
-                  placeholder="https://example.com/image.jpg"
-                  value={formData.image_url || ''}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        setFormData({ ...formData, image_url: reader.result as string });
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
                   className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black"
                 />
                 {formData.image_url && (
@@ -255,21 +263,12 @@ export function AdminProducts() {
                 >
                   {editingId ? 'Update' : 'Create'}
                 </button>
-                <button
-                  onClick={() => {
-                    setShowAddForm(false);
-                    setEditingId(null);
-                    setFormData({});
-                  }}
-                  className="flex-1 bg-neutral-200 text-neutral-800 py-2 rounded hover:bg-neutral-300 font-medium"
-                >
-                  Cancel
-                </button>
               </div>
             </div>
-          </div>
-        ) : null}
+          </DialogContent>
+        </Dialog>
 
+      <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Action Buttons */}
         <div className="flex gap-3 mb-6">
           <button
