@@ -5,12 +5,14 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { Product } from '../context/CartContext';
 import { API_BASE } from '../config/api';
+import { useToast } from '../context/ToastContext';
 
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
+  const { success, error: showError } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState<string>('');
@@ -66,11 +68,14 @@ export function ProductDetail() {
 
     setCartLoading(true);
     try {
-      await addToCart(product, 1);
+      await addToCart(product, 1, selectedSize);
       setAddedToCart(true);
+      success(`${product?.title} (${selectedSize}) added to cart! 🛒`);
       setTimeout(() => setAddedToCart(false), 2000);
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to add to cart';
       console.error('Failed to add to cart:', err);
+      showError(errorMsg);
     } finally {
       setCartLoading(false);
     }

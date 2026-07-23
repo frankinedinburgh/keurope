@@ -7,7 +7,7 @@ export type { Product, CartItem };
 interface CartContextType {
   cart: CartItem[];
   items: CartItem[];
-  addToCart: (product: Product, quantity: number) => Promise<void>;
+  addToCart: (product: Product, quantity: number, size: string) => Promise<void>;
   removeFromCart: (cartId: string) => Promise<void>;
   updateQuantity: (cartId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
@@ -48,16 +48,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const addToCart = async (product: Product, quantity: number = 1) => {
+  const addToCart = async (product: Product, quantity: number = 1, size: string) => {
     if (!token) return;
 
     try {
-      const data = await cartAPI.add(token, product.id, quantity);
+      const data = await cartAPI.add(token, product.id, quantity, size);
       setCart((prev) => {
-        const existing = prev.find((item) => item.product_id === product.id);
+        const existing = prev.find((item) => item.product_id === product.id && item.size === size);
         if (existing) {
           return prev.map((item) =>
-            item.product_id === product.id ? { ...item, quantity: data.quantity } : item
+            item.id === existing.id ? { ...item, quantity: data.quantity } : item
           );
         }
         return [...prev, data];

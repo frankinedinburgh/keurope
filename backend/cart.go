@@ -5,10 +5,11 @@ import (
 )
 
 type CartItem struct {
-	ID        string  `json:"id"`
-	UserID    string  `json:"user_id"`
-	ProductID string  `json:"product_id"`
-	Quantity  int     `json:"quantity"`
+	ID        string   `json:"id"`
+	UserID    string   `json:"user_id"`
+	ProductID string   `json:"product_id"`
+	Quantity  int      `json:"quantity"`
+	Size      string   `json:"size"`
 	Product   *Product `json:"product,omitempty"`
 }
 
@@ -19,7 +20,7 @@ type CartResponse struct {
 
 func getCart(userID string) ([]CartItem, error) {
 	query := `
-		SELECT c.id, c.user_id, c.product_id, c.quantity
+		SELECT c.id, c.user_id, c.product_id, c.quantity, c.size
 		FROM carts c
 		WHERE c.user_id = ?
 		ORDER BY c.created_at DESC
@@ -33,7 +34,7 @@ func getCart(userID string) ([]CartItem, error) {
 	var items []CartItem
 	for rows.Next() {
 		var item CartItem
-		err := rows.Scan(&item.ID, &item.UserID, &item.ProductID, &item.Quantity)
+		err := rows.Scan(&item.ID, &item.UserID, &item.ProductID, &item.Quantity, &item.Size)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan cart item: %w", err)
 		}
@@ -50,17 +51,17 @@ func getCart(userID string) ([]CartItem, error) {
 	return items, nil
 }
 
-func addToCart(userID, productID string, quantity int) (*CartItem, error) {
+func addToCart(userID, productID string, quantity int, size string) (*CartItem, error) {
 	// Check if product exists
 	product, err := getProductByIDFromDB(productID)
 	if err != nil || product == nil {
 		return nil, fmt.Errorf("product not found")
 	}
 
-	// Check if item already in cart
+	// Check if item with same size already in cart
 	var existingID string
-	query := "SELECT id FROM carts WHERE user_id = ? AND product_id = ?"
-	err = db.QueryRow(query, userID, productID).Scan(&existingID)
+	query := "SELECT id FROM carts WHERE user_id = ? AND product_id = ? AND size = ?"
+	err = db.QueryRow(query, userID, productID, size).Scan(&existingID)
 
 	if err == nil {
 		// Item exists, update quantity
@@ -72,8 +73,8 @@ func addToCart(userID, productID string, quantity int) (*CartItem, error) {
 
 		// Get updated item
 		var item CartItem
-		getQuery := "SELECT id, user_id, product_id, quantity FROM carts WHERE id = ?"
-		err = db.QueryRow(getQuery, existingID).Scan(&item.ID, &item.UserID, &item.ProductID, &item.Quantity)
+		getQuery := "SELECT id, user_id, product_id, quantity, size FROM carts WHERE id = ?"
+		err = db.QueryRow(getQuery, existingID).Scan(&item.ID, &item.UserID, &item.ProductID, &item.Quantity, &item.Size)
 		if err != nil {
 			return nil, fmt.Errorf("failed to fetch updated item: %w", err)
 		}
@@ -83,8 +84,8 @@ func addToCart(userID, productID string, quantity int) (*CartItem, error) {
 
 	// Item doesn't exist, create new
 	cartID := generateID()
-	insertQuery := "INSERT INTO carts (id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)"
-	_, err = db.Exec(insertQuery, cartID, userID, productID, quantity)
+	insertQuery := "INSERT INTO carts (id, user_id, product_id, quantity, size) VALUES (?, ?, ?, ?, ?)"
+	_, err = db.Exec(insertQuery, cartID, userID, productID, quantity, size)
 	if err != nil {
 		return nil, fmt.Errorf("failed to add to cart: %w", err)
 	}
@@ -94,6 +95,7 @@ func addToCart(userID, productID string, quantity int) (*CartItem, error) {
 		UserID:    userID,
 		ProductID: productID,
 		Quantity:  quantity,
+		Size:      size,
 		Product:   product,
 	}, nil
 }
@@ -131,8 +133,8 @@ func updateCartQuantity(userID, cartID string, quantity int) (*CartItem, error) 
 
 	// Get updated item
 	var item CartItem
-	getQuery := "SELECT id, user_id, product_id, quantity FROM carts WHERE id = ?"
-	err = db.QueryRow(getQuery, cartID).Scan(&item.ID, &item.UserID, &item.ProductID, &item.Quantity)
+	getQuery := "SELECT id, user_id, product_id, quantity, size FROM carts WHERE id = ?"
+	err = db.QueryRow(getQuery, cartID).Scan(&item.ID, &item.UserID, &item.ProductID, &item.Quantity, &item.Size)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch updated item: %w", err)
 	}

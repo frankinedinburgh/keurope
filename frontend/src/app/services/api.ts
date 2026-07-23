@@ -31,6 +31,7 @@ export interface CartItem {
   user_id: string;
   product_id: string;
   quantity: number;
+  size: string;
   product?: Product;
 }
 
@@ -209,11 +210,11 @@ export const cartAPI = {
   get: async (token: string): Promise<CartResponse> =>
     fetchAPI('/cart', { token, method: 'GET' }),
 
-  add: async (token: string, productId: string, quantity: number): Promise<CartItem> =>
+  add: async (token: string, productId: string, quantity: number, size: string): Promise<CartItem> =>
     fetchAPI('/cart', {
       method: 'POST',
       token,
-      body: JSON.stringify({ product_id: productId, quantity }),
+      body: JSON.stringify({ product_id: productId, quantity, size }),
     }),
 
   updateQuantity: async (token: string, cartId: string, quantity: number): Promise<CartItem> =>

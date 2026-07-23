@@ -11,6 +11,7 @@ import (
 type AddToCartRequest struct {
 	ProductID string `json:"product_id"`
 	Quantity  int    `json:"quantity"`
+	Size      string `json:"size"`
 }
 
 // GetCart returns the shopping cart for the authenticated user
@@ -79,12 +80,12 @@ func addToCartHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.ProductID == "" || req.Quantity <= 0 {
-		http.Error(w, "Invalid product_id or quantity", http.StatusBadRequest)
+	if req.ProductID == "" || req.Quantity <= 0 || req.Size == "" {
+		http.Error(w, "Invalid product_id, quantity, or size", http.StatusBadRequest)
 		return
 	}
 
-	item, err := addToCart(claims.UserID, req.ProductID, req.Quantity)
+	item, err := addToCart(claims.UserID, req.ProductID, req.Quantity, req.Size)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

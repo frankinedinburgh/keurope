@@ -230,10 +230,11 @@ func createTables() error {
 		user_id TEXT NOT NULL,
 		product_id TEXT NOT NULL,
 		quantity INTEGER NOT NULL DEFAULT 1,
+		size TEXT NOT NULL DEFAULT 'M',
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		FOREIGN KEY (user_id) REFERENCES users(id),
 		FOREIGN KEY (product_id) REFERENCES products(id),
-		UNIQUE(user_id, product_id)
+		UNIQUE(user_id, product_id, size)
 	)
 	`
 	_, err = db.Exec(cartQuery)

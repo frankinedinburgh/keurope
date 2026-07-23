@@ -4,10 +4,12 @@ import { ArrowLeft, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { ordersAPI, CreateOrderRequest } from '../services/api';
+import { useToast } from '../context/ToastContext';
 
 export function Checkout() {
   const { items, total, clearCart, loadCart } = useCart();
   const { token } = useAuth();
+  const { success, error: showError } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -62,9 +64,12 @@ export function Checkout() {
         throw new Error('Order created but cart failed to clear. Please refresh the page.');
       }
 
+      success('Order placed successfully! 🎉');
       setOrderComplete(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to place order');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to place order';
+      setError(errorMsg);
+      showError(errorMsg);
       setLoading(false);
     }
   };

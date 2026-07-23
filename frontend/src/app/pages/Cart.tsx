@@ -1,10 +1,17 @@
 import { Link, useNavigate } from 'react-router';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 
 export function Cart() {
   const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
+  const { info } = useToast();
   const navigate = useNavigate();
+
+  const handleRemove = (itemId: string, productTitle?: string) => {
+    removeFromCart(itemId);
+    info(`${productTitle || 'Item'} removed from cart`);
+  };
 
   if (cart.length === 0) {
     return (
@@ -52,6 +59,7 @@ export function Cart() {
                         <h3 className="mb-1">{item.product?.title}</h3>
                       </Link>
                       <p className="text-sm text-neutral-600">{item.product?.category}</p>
+                      <p className="text-xs text-neutral-500 mt-1">Size: {item.size}</p>
                     </div>
                     <p className="flex-shrink-0">€{item.product?.price}</p>
                   </div>
@@ -76,7 +84,7 @@ export function Cart() {
 
                     {/* Remove Button */}
                     <button
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() => handleRemove(item.id, item.product?.title)}
                       className="text-sm text-neutral-600 hover:text-black transition-colors flex items-center gap-2"
                     >
                       <Trash2 className="size-4" />
