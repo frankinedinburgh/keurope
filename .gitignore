@@ -8,5 +8,6 @@
 *.db-shm
 *.db-wal
 frontend/dist/
+frontend/node_modules/
 backend/dist/
 node_modules/
