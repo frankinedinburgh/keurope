@@ -1,73 +1,70 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { STORAGE_KEYS } from '../config/constants';
+import { Lock } from 'lucide-react';
+import { useAdmin } from '../context/AdminContext';
+import { useToast } from '../context/ToastContext';
 
 export function AdminLogin() {
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { isAdmin, login, loading, error } = useAdmin();
+  const { error: showError } = useToast();
+  const [password, setPassword] = useState('');
 
-  // Get admin password from environment variable
-  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '';
+  if (isAdmin) {
+    navigate('/admin/dashboard');
+    return null;
+  }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    // Simple password check
-    if (password === ADMIN_PASSWORD) {
-      // Store admin session in localStorage
-      localStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true');
+    try {
+      await login(password);
       navigate('/admin/dashboard');
-    } else {
-      setError('Incorrect password');
+    } catch (err) {
+      showError(error || 'Login failed');
     }
-
-    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-2">K-Europe Admin</h1>
-          <p className="text-gray-600">Manage your products</p>
-        </div>
-
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded p-4">
-              <p className="text-sm text-red-800">{error}</p>
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50">
+      <div className="w-full max-w-md px-4">
+        <div className="bg-white rounded-lg border p-8">
+          <div className="flex justify-center mb-6">
+            <div className="size-12 rounded-full bg-black flex items-center justify-center">
+              <Lock className="size-6 text-white" />
             </div>
-          )}
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Admin Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-black focus:outline-none"
-              placeholder="Enter admin password"
-            />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-black text-white py-2 rounded-md font-medium hover:bg-gray-800 disabled:bg-gray-400"
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
+          <h1 className="text-2xl font-bold text-center mb-2">Admin Panel</h1>
+          <p className="text-sm text-neutral-600 text-center mb-6">Enter admin password to continue</p>
 
-        <p className="text-center text-sm text-gray-600">
-          Contact Frank for the password
-        </p>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter admin password"
+                className="w-full px-4 py-3 border border-neutral-300 rounded focus:outline-none focus:border-black"
+                required
+              />
+            </div>
+
+            {error && <div className="bg-red-50 border border-red-200 rounded p-3 text-sm text-red-800">{error}</div>}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-black text-white py-3 rounded hover:bg-neutral-800 disabled:bg-gray-400 transition-colors font-medium"
+            >
+              {loading ? 'Logging in...' : 'Login'}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

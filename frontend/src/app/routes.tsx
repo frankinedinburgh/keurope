@@ -11,8 +11,7 @@ import { Shipping } from './pages/Shipping';
 import { Returns } from './pages/Returns';
 import { AdminLogin } from './pages/AdminLogin';
 import { AdminDashboard } from './pages/AdminDashboard';
-import { AddProduct } from './pages/AddProduct';
-import { EditProduct } from './pages/EditProduct';
+import { AdminProducts } from './pages/AdminProducts';
 import { AdminOrders } from './pages/AdminOrders';
 import { UserOrders } from './pages/UserOrders';
 import { LogoPreview } from './pages/LogoPreview';
@@ -38,8 +37,7 @@ export const router = createBrowserRouter([
       { path: 'reset-password', Component: ResetPassword },
       { path: 'admin/login', Component: AdminLogin },
       { path: 'admin/dashboard', Component: AdminDashboard },
-      { path: 'admin/add-product', Component: AddProduct },
-      { path: 'admin/edit-product/:id', Component: EditProduct },
+      { path: 'admin/products', Component: AdminProducts },
       { path: 'admin/orders', Component: AdminOrders },
       {
         path: 'cart',

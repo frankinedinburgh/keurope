@@ -1,47 +1,61 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
+import { useAdmin } from '../context/AdminContext';
+import { useToast } from '../context/ToastContext';
+import { Order } from '../services/api';
 import { API_BASE } from '../config/api';
-import { STORAGE_KEYS } from '../config/constants';
 
 export function AdminOrders() {
   const navigate = useNavigate();
-  const [orders, setOrders] = useState<any[]>([]);
+  const { isAdmin, adminToken } = useAdmin();
+  const { success, error: showError } = useToast();
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  if (!isAdmin) {
+    navigate('/admin/login');
+    return null;
+  }
 
   useEffect(() => {
-    const isAdmin = localStorage.getItem(STORAGE_KEYS.ADMIN_AUTH);
-    if (!isAdmin) {
-      navigate('/admin/login');
-      return;
-    }
-    fetchOrders();
-  }, [navigate]);
+    loadOrders();
+  }, []);
 
-  const fetchOrders = async () => {
+  const loadOrders = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE}/orders/all`);
-      if (!response.ok) throw new Error('Failed to load orders');
+      const response = await fetch(`${API_BASE}/admin/orders`, {
+        headers: { 'Authorization': `Bearer ${adminToken}` },
+      });
       const data = await response.json();
       setOrders(data.data || []);
-      setError('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load orders');
+      showError('Failed to load orders');
     } finally {
       setLoading(false);
     }
   };
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  const updateStatus = async (orderId: string, status: string) => {
+    setUpdatingId(orderId);
+    try {
+      await fetch(`${API_BASE}/admin/orders/status?id=${orderId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`,
+        },
+        body: JSON.stringify({ status }),
+      });
+      success(`Order status updated to ${status}`);
+      loadOrders();
+    } catch (err) {
+      showError('Failed to update order');
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   if (loading) {
@@ -53,87 +67,63 @@ export function AdminOrders() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+    <div className="min-h-screen bg-neutral-50">
       <header className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <button
             onClick={() => navigate('/admin/dashboard')}
-            className="flex items-center gap-2 text-gray-600 hover:text-black mb-4"
+            className="flex items-center gap-2 text-neutral-600 hover:text-black transition-colors mb-4"
           >
             <ArrowLeft className="size-4" />
-            Back to Dashboard
+            Back
           </button>
-          <h1 className="text-3xl font-bold">Orders</h1>
-          <p className="text-gray-600 mt-2">{orders.length} total orders</p>
+          <h1 className="text-2xl font-bold">Orders</h1>
         </div>
       </header>
 
-      {/* Content */}
       <main className="max-w-7xl mx-auto px-4 py-12">
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded p-4 mb-6">
-            <p className="text-red-800">{error}</p>
-          </div>
-        )}
-
-        {orders.length === 0 ? (
-          <div className="bg-white rounded-lg p-12 text-center border">
-            <p className="text-gray-600">No orders yet</p>
-          </div>
-        ) : (
-          <div className="bg-white rounded-lg border overflow-x-auto">
-            <table className="w-full">
-              <thead className="border-b bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-medium">Order ID</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium">Customer</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium">Email</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium">Location</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium">Amount</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium">Status</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order) => (
-                  <tr key={order.id} className="border-b hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <code className="text-xs bg-gray-100 px-2 py-1 rounded">{order.id}</code>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <p className="font-medium">{order.first_name} {order.last_name}</p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm">{order.email}</td>
-                    <td className="px-6 py-4 text-sm">
-                      <div>
-                        <p>{order.city}, {order.country}</p>
-                        <p className="text-gray-500 text-xs">{order.postal_code}</p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 font-medium">€{order.total_price.toFixed(2)}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        order.status === 'pending'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : order.status === 'shipped'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-green-100 text-green-800'
-                      }`}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {formatDate(order.created_at)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <div className="space-y-4">
+          {orders.map((order) => (
+            <div key={order.id} className="bg-white rounded border p-6">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+                <div>
+                  <p className="text-xs text-neutral-600 mb-1">Order ID</p>
+                  <p className="font-mono text-xs">{order.id}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-neutral-600 mb-1">Customer</p>
+                  <p className="font-medium">{order.first_name} {order.last_name}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-neutral-600 mb-1">Total</p>
+                  <p className="font-medium">€{order.total_price.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-neutral-600 mb-1">Date</p>
+                  <p className="text-sm">{new Date(order.created_at).toLocaleDateString()}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-neutral-600 mb-1">Status</p>
+                  <select
+                    value={order.status}
+                    onChange={(e) => updateStatus(order.id, e.target.value)}
+                    disabled={updatingId === order.id}
+                    className="text-sm px-2 py-1 border rounded focus:outline-none cursor-pointer"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                  </select>
+                </div>
+              </div>
+              <div className="border-t pt-4">
+                <p className="text-xs text-neutral-600 mb-2">Shipping Address</p>
+                <p className="text-sm">{order.address}</p>
+                <p className="text-sm">{order.city}, {order.postal_code}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
     </div>
   );

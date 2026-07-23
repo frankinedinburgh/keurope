@@ -38,29 +38,41 @@ func main() {
 	router.HandleFunc("/api/auth/forgot-password", forgotPassword).Methods("POST")
 	router.HandleFunc("/api/auth/reset-password", resetPassword).Methods("POST")
 
-	// Product routes (public)
+	// Admin routes (public - but password protected)
+	router.HandleFunc("/api/admin/login", adminLogin).Methods("POST")
+
+	// Product routes (public read, admin write)
 	router.HandleFunc("/api/products", getProducts).Methods("GET")
-	router.HandleFunc("/api/products", createProduct).Methods("POST")
 	router.HandleFunc("/api/products/{id}", getProduct).Methods("GET")
-	router.HandleFunc("/api/products/{id}", updateProduct).Methods("PUT")
-	router.HandleFunc("/api/products/{id}", deleteProduct).Methods("DELETE")
 	router.HandleFunc("/api/categories", getCategories).Methods("GET")
 
-	// Protected routes (require authentication)
-	protected := router.PathPrefix("/api").Subrouter()
-	protected.Use(authMiddleware)
+	// User protected routes (require user authentication)
+	userProtected := router.PathPrefix("/api").Subrouter()
+	userProtected.Use(authMiddleware)
 
-	// Cart routes (protected)
-	protected.HandleFunc("/cart", getCartHandler).Methods("GET")
-	protected.HandleFunc("/cart", addToCartHandler).Methods("POST")
-	protected.HandleFunc("/cart/clear", clearCartHandler).Methods("DELETE")
-	protected.HandleFunc("/cart/{cartId}", removeFromCartHandler).Methods("DELETE")
-	protected.HandleFunc("/cart/{cartId}", updateCartQuantityHandler).Methods("PUT")
+	// Cart routes (user protected)
+	userProtected.HandleFunc("/cart", getCartHandler).Methods("GET")
+	userProtected.HandleFunc("/cart", addToCartHandler).Methods("POST")
+	userProtected.HandleFunc("/cart/clear", clearCartHandler).Methods("DELETE")
+	userProtected.HandleFunc("/cart/{cartId}", removeFromCartHandler).Methods("DELETE")
+	userProtected.HandleFunc("/cart/{cartId}", updateCartQuantityHandler).Methods("PUT")
 
-	// Order routes (protected)
-	protected.HandleFunc("/orders", createOrderHandler).Methods("POST")
-	protected.HandleFunc("/orders", getOrdersHandler).Methods("GET")
-	protected.HandleFunc("/orders/all", getAllOrdersHandler).Methods("GET")
+	// Order routes (user protected)
+	userProtected.HandleFunc("/orders", createOrderHandler).Methods("POST")
+	userProtected.HandleFunc("/orders", getOrdersHandler).Methods("GET")
+
+	// Admin protected routes (require admin authentication)
+	adminProtected := router.PathPrefix("/api/admin").Subrouter()
+	adminProtected.Use(adminMiddleware)
+
+	// Admin product management
+	adminProtected.HandleFunc("/products", createProduct).Methods("POST")
+	adminProtected.HandleFunc("/products/{id}", updateProduct).Methods("PUT")
+	adminProtected.HandleFunc("/products/{id}", deleteProduct).Methods("DELETE")
+
+	// Admin order management
+	adminProtected.HandleFunc("/orders", getAdminOrdersHandler).Methods("GET")
+	adminProtected.HandleFunc("/orders/status", updateOrderStatusHandler).Methods("PUT")
 
 	// Swagger API documentation (public)
 	router.PathPrefix("/docs/").Handler(httpSwagger.WrapHandler)
