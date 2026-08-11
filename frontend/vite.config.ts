@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
+import imagemin from 'vite-plugin-imagemin'
 import react from '@vitejs/plugin-react'
 
 
@@ -23,6 +24,14 @@ export default defineConfig({
     // Tailwind is not being actively used – do not remove them
     react(),
     tailwindcss(),
+    imagemin({
+      gifsicle: { optimizationLevel: 7 },
+      optipng: { optimizationLevel: 7 },
+      mozjpeg: { quality: 85 },
+      pngquant: { quality: [0.8, 0.9] },
+      svgo: { plugins: [{ name: 'removeViewBox' }] },
+      webp: { quality: 85 }, // ← WebP conversion!
+    }),
   ],
   resolve: {
     alias: {
