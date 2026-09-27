@@ -185,7 +185,7 @@ export function Shop() {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {displayedProducts.map((product, index) => (
-                <ProductCard key={product.id} product={product} lazy={index > 3} highPriority={index === 0}/>
+                <ProductCard key={product.id} product={product} isLazy={index > 3} isHighPriority={index === 0}/>
               ))}
             </div>
 
