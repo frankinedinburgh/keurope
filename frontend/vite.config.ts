@@ -18,6 +18,11 @@ function figmaAssetResolver() {
 }
 
 export default defineConfig({
+  server: {
+    watch: {
+      ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/coverage/**'],
+    },
+  },
   plugins: [
     figmaAssetResolver(),
     // The React and Tailwind plugins are both required for Make, even if

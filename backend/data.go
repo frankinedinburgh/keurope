@@ -7,7 +7,7 @@ var products = []Product{
 		Title:       "Oversized Linen Blazer - Seoul Collection",
 		Price:       189,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/1.jpg",
+		ImageURL:    "/images/outerwear/1.webp",
 		Description: "A modern take on the classic blazer. Crafted from premium linen, this oversized piece offers sophisticated elegance for every occasion. Perfect layering piece that transitions effortlessly from office to evening.",
 	},
 	{
@@ -15,7 +15,7 @@ var products = []Product{
 		Title:       "Structured Wool Coat - Seoul Designer",
 		Price:       299,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/2.jpg",
+		ImageURL:    "/images/outerwear/2.webp",
 		Description: "The ultimate investment piece. This structured wool coat combines Korean minimalism with European sophistication. Meticulously crafted from premium wool.",
 	},
 	{
@@ -23,7 +23,7 @@ var products = []Product{
 		Title:       "Classic Trench Coat - Seoul Studio",
 		Price:       249,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/3.jpg",
+		ImageURL:    "/images/outerwear/3.webp",
 		Description: "Timeless elegance meets modern design. This trench coat is the perfect canvas for any outfit, with refined tailoring and premium fabric that will last for years.",
 	},
 	{
@@ -31,7 +31,7 @@ var products = []Product{
 		Title:       "Lightweight Denim Jacket - Korean Brand",
 		Price:       129,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/1.jpg",
+		ImageURL:    "/images/outerwear/1.webp",
 		Description: "Versatile and effortless. This denim jacket adds the perfect touch to any wardrobe. Quality Korean craftsmanship ensures durability and comfort.",
 	},
 	{
@@ -39,7 +39,7 @@ var products = []Product{
 		Title:       "Wool Blend Cardigan - Seoul Collection",
 		Price:       159,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/2.jpg",
+		ImageURL:    "/images/outerwear/2.webp",
 		Description: "Layering perfection. This cardigan blends warmth with style, ideal for transitional seasons and versatile styling options.",
 	},
 	{
@@ -47,7 +47,7 @@ var products = []Product{
 		Title:       "Formal Blazer Set - Designer Piece",
 		Price:       219,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/3.jpg",
+		ImageURL:    "/images/outerwear/3.webp",
 		Description: "Professional and polished. Perfect for business meetings and formal occasions, this blazer exudes confidence and sophistication.",
 	},
 	{
@@ -55,7 +55,7 @@ var products = []Product{
 		Title:       "Linen Blend Jacket - Summer Essential",
 		Price:       139,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/1.jpg",
+		ImageURL:    "/images/outerwear/1.webp",
 		Description: "Breathable and elegant. Ideal for warmer months, this jacket offers style without the bulk.",
 	},
 	{
@@ -63,7 +63,7 @@ var products = []Product{
 		Title:       "Cashmere Wrap - Luxury Collection",
 		Price:       279,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/2.jpg",
+		ImageURL:    "/images/outerwear/2.webp",
 		Description: "Ultimate luxury. This cashmere wrap adds sophistication to any outfit while providing warmth and comfort.",
 	},
 	{
@@ -71,7 +71,7 @@ var products = []Product{
 		Title:       "Oversized Coat - Street Style",
 		Price:       269,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/3.jpg",
+		ImageURL:    "/images/outerwear/3.webp",
 		Description: "Fashion-forward and comfortable. This oversized coat is perfect for creating a statement look.",
 	},
 	{
@@ -79,7 +79,7 @@ var products = []Product{
 		Title:       "Wool Peacoat - Classic Style",
 		Price:       229,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/1.jpg",
+		ImageURL:    "/images/outerwear/1.webp",
 		Description: "A timeless classic. This peacoat never goes out of style and pairs with everything.",
 	},
 	{
@@ -87,7 +87,7 @@ var products = []Product{
 		Title:       "Linen Shirt Jacket - Lightweight",
 		Price:       149,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/2.jpg",
+		ImageURL:    "/images/outerwear/2.webp",
 		Description: "Perfect for layering. This shirt jacket offers style and functionality.",
 	},
 	{
@@ -95,7 +95,7 @@ var products = []Product{
 		Title:       "Tailored Blazer - Office Essential",
 		Price:       199,
 		Category:    "Outerwear",
-		ImageURL:    "/images/outerwear/3.jpg",
+		ImageURL:    "/images/outerwear/3.webp",
 		Description: "Professional elegance. This blazer is a must-have for any modern woman's wardrobe.",
 	},
 
@@ -105,7 +105,7 @@ var products = []Product{
 		Title:       "Premium Cotton Shirt - Seoul Designer",
 		Price:       79,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/1.jpg",
+		ImageURL:    "/images/tops/1.webp",
 		Description: "Timeless simplicity with impeccable attention to detail. This pristine white shirt is a wardrobe essential.",
 	},
 	{
@@ -113,7 +113,7 @@ var products = []Product{
 		Title:       "Silk Blouse - Elegant Design",
 		Price:       119,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/2.jpg",
+		ImageURL:    "/images/tops/2.webp",
 		Description: "Luxurious and refined. This silk blouse elevates any look with its smooth drape and elegant design.",
 	},
 	{
@@ -121,7 +121,7 @@ var products = []Product{
 		Title:       "Basic Tee - Pure White",
 		Price:       49,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/3.jpg",
+		ImageURL:    "/images/tops/3.webp",
 		Description: "The foundation of every wardrobe. High-quality basics that work with everything.",
 	},
 	{
@@ -129,7 +129,7 @@ var products = []Product{
 		Title:       "Linen Top - Breathable Comfort",
 		Price:       69,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/1.jpg",
+		ImageURL:    "/images/tops/1.webp",
 		Description: "Perfect for warm weather. This linen top offers breathability and style.",
 	},
 	{
@@ -137,7 +137,7 @@ var products = []Product{
 		Title:       "Striped Shirt - Classic Pattern",
 		Price:       89,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/2.jpg",
+		ImageURL:    "/images/tops/2.webp",
 		Description: "Nautical elegance. This striped shirt is a versatile piece that works in any season.",
 	},
 	{
@@ -145,7 +145,7 @@ var products = []Product{
 		Title:       "Oversized T-shirt - Comfort First",
 		Price:       59,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/3.jpg",
+		ImageURL:    "/images/tops/3.webp",
 		Description: "Casual and comfortable. Perfect for everyday wear and relaxation.",
 	},
 	{
@@ -153,7 +153,7 @@ var products = []Product{
 		Title:       "Fitted Turtleneck - Winter Essential",
 		Price:       99,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/1.jpg",
+		ImageURL:    "/images/tops/1.webp",
 		Description: "Timeless and elegant. This turtleneck is perfect for layering and makes any outfit sophisticated.",
 	},
 	{
@@ -161,7 +161,7 @@ var products = []Product{
 		Title:       "Button-Up Shirt - Work Ready",
 		Price:       109,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/2.jpg",
+		ImageURL:    "/images/tops/2.webp",
 		Description: "Professional and polished. Perfect for the office and business settings.",
 	},
 	{
@@ -169,7 +169,7 @@ var products = []Product{
 		Title:       "Long Sleeve Tee - Everyday Basic",
 		Price:       64,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/3.jpg",
+		ImageURL:    "/images/tops/3.webp",
 		Description: "Versatile and reliable. A wardrobe staple you'll reach for constantly.",
 	},
 	{
@@ -177,7 +177,7 @@ var products = []Product{
 		Title:       "Satin Blouse - Evening Elegance",
 		Price:       139,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/1.jpg",
+		ImageURL:    "/images/tops/1.webp",
 		Description: "Sophisticated and luxurious. Perfect for evening events and special occasions.",
 	},
 	{
@@ -185,7 +185,7 @@ var products = []Product{
 		Title:       "Cropped Top - Modern Cut",
 		Price:       74,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/2.jpg",
+		ImageURL:    "/images/tops/2.webp",
 		Description: "Contemporary and stylish. This cropped top works beautifully with high-waisted bottoms.",
 	},
 	{
@@ -193,7 +193,7 @@ var products = []Product{
 		Title:       "Henley Shirt - Casual Cool",
 		Price:       84,
 		Category:    "Tops",
-		ImageURL:    "/images/tops/3.jpg",
+		ImageURL:    "/images/tops/3.webp",
 		Description: "Laid-back style with an edge. Perfect for casual outings and weekends.",
 	},
 
@@ -203,7 +203,7 @@ var products = []Product{
 		Title:       "Wide Leg Tailored Trousers - Seoul Studio",
 		Price:       129,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/1.jpg",
+		ImageURL:    "/images/bottoms/1.webp",
 		Description: "Contemporary silhouette with exceptional tailoring. These wide-leg trousers flatter all body types.",
 	},
 	{
@@ -211,7 +211,7 @@ var products = []Product{
 		Title:       "Slim Fit Jeans - Classic Denim",
 		Price:       99,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/2.jpg",
+		ImageURL:    "/images/bottoms/2.webp",
 		Description: "Timeless fit. These jeans work with everything and improve with age.",
 	},
 	{
@@ -219,7 +219,7 @@ var products = []Product{
 		Title:       "High Waisted Trousers - Modern Silhouette",
 		Price:       139,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/3.jpg",
+		ImageURL:    "/images/bottoms/3.webp",
 		Description: "Flattering and elegant. The perfect high-waisted trouser for any occasion.",
 	},
 	{
@@ -227,7 +227,7 @@ var products = []Product{
 		Title:       "Black Leggings - Essential Piece",
 		Price:       59,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/1.jpg",
+		ImageURL:    "/images/bottoms/1.webp",
 		Description: "Versatile and comfortable. Every wardrobe needs quality black leggings.",
 	},
 	{
@@ -235,7 +235,7 @@ var products = []Product{
 		Title:       "Straight Leg Jeans - Classic Style",
 		Price:       109,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/2.jpg",
+		ImageURL:    "/images/bottoms/2.webp",
 		Description: "Never out of style. These straight-leg jeans are a timeless essential.",
 	},
 	{
@@ -243,7 +243,7 @@ var products = []Product{
 		Title:       "Cropped Pants - Sophisticated Cut",
 		Price:       119,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/3.jpg",
+		ImageURL:    "/images/bottoms/3.webp",
 		Description: "Perfect proportions. These cropped pants work beautifully with any top.",
 	},
 	{
@@ -251,7 +251,7 @@ var products = []Product{
 		Title:       "Pleated Trousers - Elegant Detail",
 		Price:       149,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/1.jpg",
+		ImageURL:    "/images/bottoms/1.webp",
 		Description: "Sophisticated tailoring. The pleats add visual interest and dimension.",
 	},
 	{
@@ -259,7 +259,7 @@ var products = []Product{
 		Title:       "Flared Jeans - Retro Chic",
 		Price:       119,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/2.jpg",
+		ImageURL:    "/images/bottoms/2.webp",
 		Description: "Fashion-forward and fun. These flared jeans bring retro vibes to modern styling.",
 	},
 	{
@@ -267,7 +267,7 @@ var products = []Product{
 		Title:       "Tailored Shorts - Summer Ready",
 		Price:       84,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/3.jpg",
+		ImageURL:    "/images/bottoms/3.webp",
 		Description: "Sophisticated shorts perfect for warm weather and casual elegance.",
 	},
 	{
@@ -275,7 +275,7 @@ var products = []Product{
 		Title:       "Relaxed Fit Jeans - Comfortable Style",
 		Price:       104,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/1.jpg",
+		ImageURL:    "/images/bottoms/1.webp",
 		Description: "Comfort meets style. These relaxed-fit jeans are perfect for everyday wear.",
 	},
 	{
@@ -283,7 +283,7 @@ var products = []Product{
 		Title:       "Cigarette Pants - Sleek Fit",
 		Price:       129,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/2.jpg",
+		ImageURL:    "/images/bottoms/2.webp",
 		Description: "Sleek and streamlined. Perfect for creating a polished silhouette.",
 	},
 	{
@@ -291,7 +291,7 @@ var products = []Product{
 		Title:       "Bermuda Shorts - Classic Cut",
 		Price:       94,
 		Category:    "Bottoms",
-		ImageURL:    "/images/bottoms/3.jpg",
+		ImageURL:    "/images/bottoms/3.webp",
 		Description: "Timeless elegance. These shorts work from day to night.",
 	},
 
@@ -301,7 +301,7 @@ var products = []Product{
 		Title:       "Cashmere Blend Sweater - Korean Knit",
 		Price:       149,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/1.jpg",
+		ImageURL:    "/images/knitwear/1.webp",
 		Description: "Indulge in luxury with this cashmere blend knit. Soft, breathable, and designed to last.",
 	},
 	{
@@ -309,7 +309,7 @@ var products = []Product{
 		Title:       "Wool Turtleneck - Winter Warmth",
 		Price:       129,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/2.jpg",
+		ImageURL:    "/images/knitwear/2.webp",
 		Description: "Cozy and sophisticated. Perfect for cold weather layering.",
 	},
 	{
@@ -317,7 +317,7 @@ var products = []Product{
 		Title:       "Cotton Knit Sweater - Breathable",
 		Price:       89,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/3.jpg",
+		ImageURL:    "/images/knitwear/3.webp",
 		Description: "Light and versatile. Perfect for any season and any occasion.",
 	},
 	{
@@ -325,7 +325,7 @@ var products = []Product{
 		Title:       "Merino Wool Sweater - Premium Quality",
 		Price:       159,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/1.jpg",
+		ImageURL:    "/images/knitwear/1.webp",
 		Description: "Exceptional softness. Merino wool offers superior comfort and durability.",
 	},
 	{
@@ -333,7 +333,7 @@ var products = []Product{
 		Title:       "Chunky Knit Cardigan - Cozy Style",
 		Price:       139,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/2.jpg",
+		ImageURL:    "/images/knitwear/2.webp",
 		Description: "Warm and inviting. This chunky knit is perfect for creating comfort and style.",
 	},
 	{
@@ -341,7 +341,7 @@ var products = []Product{
 		Title:       "V-Neck Sweater - Versatile Basic",
 		Price:       99,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/3.jpg",
+		ImageURL:    "/images/knitwear/3.webp",
 		Description: "Classic and flattering. A V-neck sweater works with everything in your wardrobe.",
 	},
 	{
@@ -349,7 +349,7 @@ var products = []Product{
 		Title:       "Cable Knit Sweater - Textured Detail",
 		Price:       119,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/1.jpg",
+		ImageURL:    "/images/knitwear/1.webp",
 		Description: "Sophisticated texture. The cable knit adds visual interest and dimension.",
 	},
 	{
@@ -357,7 +357,7 @@ var products = []Product{
 		Title:       "Crew Neck Sweater - Essential Piece",
 		Price:       94,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/2.jpg",
+		ImageURL:    "/images/knitwear/2.webp",
 		Description: "A wardrobe staple. This crew neck sweater is reliable and timeless.",
 	},
 	{
@@ -365,7 +365,7 @@ var products = []Product{
 		Title:       "Lightweight Cardigan - Perfect Layer",
 		Price:       109,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/3.jpg",
+		ImageURL:    "/images/knitwear/3.webp",
 		Description: "Versatile layering piece. Perfect for creating dimension in any outfit.",
 	},
 	{
@@ -373,7 +373,7 @@ var products = []Product{
 		Title:       "Alpaca Blend Sweater - Ultra Soft",
 		Price:       179,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/1.jpg",
+		ImageURL:    "/images/knitwear/1.webp",
 		Description: "Incredibly soft and luxurious. Alpaca blend offers unmatched comfort.",
 	},
 	{
@@ -381,7 +381,7 @@ var products = []Product{
 		Title:       "Mock Neck Sweater - Modern Style",
 		Price:       104,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/2.jpg",
+		ImageURL:    "/images/knitwear/2.webp",
 		Description: "Contemporary silhouette. This mock neck offers sophistication and comfort.",
 	},
 	{
@@ -389,7 +389,7 @@ var products = []Product{
 		Title:       "Wrap Cardigan - Flattering Cut",
 		Price:       129,
 		Category:    "Knitwear",
-		ImageURL:    "/images/knitwear/3.jpg",
+		ImageURL:    "/images/knitwear/3.webp",
 		Description: "Beautifully flattering. The wrap style is perfect for any body type.",
 	},
 
@@ -399,7 +399,7 @@ var products = []Product{
 		Title:       "Elegant Midi Dress - Korean Designer",
 		Price:       169,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/1.jpg",
+		ImageURL:    "/images/dresses/1.webp",
 		Description: "Sophistication defined. This midi dress captures the essence of Korean minimalist design.",
 	},
 	{
@@ -407,7 +407,7 @@ var products = []Product{
 		Title:       "Classic Shift Dress - Timeless Style",
 		Price:       139,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/2.jpg",
+		ImageURL:    "/images/dresses/2.webp",
 		Description: "Simple elegance. This shift dress works from office to evening.",
 	},
 	{
@@ -415,7 +415,7 @@ var products = []Product{
 		Title:       "Wrap Dress - Flattering Silhouette",
 		Price:       159,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/3.jpg",
+		ImageURL:    "/images/dresses/3.webp",
 		Description: "Universally flattering. The wrap style emphasizes curves beautifully.",
 	},
 	{
@@ -423,7 +423,7 @@ var products = []Product{
 		Title:       "A-Line Dress - Feminine Cut",
 		Price:       149,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/1.jpg",
+		ImageURL:    "/images/dresses/1.webp",
 		Description: "Soft and feminine. This A-line dress is perfect for any occasion.",
 	},
 	{
@@ -431,7 +431,7 @@ var products = []Product{
 		Title:       "Bodycon Dress - Sleek Fit",
 		Price:       129,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/2.jpg",
+		ImageURL:    "/images/dresses/2.webp",
 		Description: "Confident and bold. This bodycon dress makes a statement.",
 	},
 	{
@@ -439,7 +439,7 @@ var products = []Product{
 		Title:       "Maxi Dress - Floor Length Elegance",
 		Price:       189,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/3.jpg",
+		ImageURL:    "/images/dresses/3.webp",
 		Description: "Sophisticated elegance. Perfect for formal occasions and evening events.",
 	},
 	{
@@ -447,7 +447,7 @@ var products = []Product{
 		Title:       "Cocktail Dress - Evening Essential",
 		Price:       179,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/1.jpg",
+		ImageURL:    "/images/dresses/1.webp",
 		Description: "Chic and sophisticated. Perfect for cocktail events and parties.",
 	},
 	{
@@ -455,7 +455,7 @@ var products = []Product{
 		Title:       "Shirt Dress - Casual Elegance",
 		Price:       119,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/2.jpg",
+		ImageURL:    "/images/dresses/2.webp",
 		Description: "Versatile and chic. This shirt dress works as a dress or as a layering piece.",
 	},
 	{
@@ -463,7 +463,7 @@ var products = []Product{
 		Title:       "Pencil Dress - Sleek Silhouette",
 		Price:       144,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/3.jpg",
+		ImageURL:    "/images/dresses/3.webp",
 		Description: "Professional and polished. Perfect for the office and business meetings.",
 	},
 	{
@@ -471,7 +471,7 @@ var products = []Product{
 		Title:       "Fit and Flare Dress - Playful Style",
 		Price:       154,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/1.jpg",
+		ImageURL:    "/images/dresses/1.webp",
 		Description: "Fun and feminine. This fit and flare dress celebrates the female form.",
 	},
 	{
@@ -479,7 +479,7 @@ var products = []Product{
 		Title:       "Slip Dress - Minimalist Elegance",
 		Price:       124,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/2.jpg",
+		ImageURL:    "/images/dresses/2.webp",
 		Description: "Effortlessly chic. Perfect for layering or wearing as a standalone piece.",
 	},
 	{
@@ -487,7 +487,7 @@ var products = []Product{
 		Title:       "Patterned Dress - Statement Piece",
 		Price:       164,
 		Category:    "Dresses",
-		ImageURL:    "/images/dresses/3.jpg",
+		ImageURL:    "/images/dresses/3.webp",
 		Description: "Bold and beautiful. This patterned dress makes a fashion statement.",
 	},
 
@@ -497,7 +497,7 @@ var products = []Product{
 		Title:       "Coordinated Ensemble Set - Seoul Contemporary",
 		Price:       159,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/1.jpg",
+		ImageURL:    "/images/sets/1.webp",
 		Description: "Take the guesswork out of styling with this thoughtfully coordinated set.",
 	},
 	{
@@ -505,7 +505,7 @@ var products = []Product{
 		Title:       "Contemporary Outfit Set - Seoul Studio",
 		Price:       199,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/2.jpg",
+		ImageURL:    "/images/sets/2.webp",
 		Description: "Two pieces, endless possibilities. This contemporary set offers maximum versatility.",
 	},
 	{
@@ -513,7 +513,7 @@ var products = []Product{
 		Title:       "Classic Matching Set - Timeless Pairing",
 		Price:       179,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/3.jpg",
+		ImageURL:    "/images/sets/3.webp",
 		Description: "Effortless coordination. This matching set takes the stress out of getting dressed.",
 	},
 	{
@@ -521,7 +521,7 @@ var products = []Product{
 		Title:       "Lounge Set - Comfort and Style",
 		Price:       139,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/1.jpg",
+		ImageURL:    "/images/sets/1.webp",
 		Description: "Cozy yet chic. This lounge set is perfect for relaxed weekends at home.",
 	},
 	{
@@ -529,7 +529,7 @@ var products = []Product{
 		Title:       "Formal Two-Piece Set - Evening Ready",
 		Price:       229,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/2.jpg",
+		ImageURL:    "/images/sets/2.webp",
 		Description: "Sophisticated pairing. Perfect for formal events and special occasions.",
 	},
 	{
@@ -537,7 +537,7 @@ var products = []Product{
 		Title:       "Casual Pair Set - Everyday Essential",
 		Price:       129,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/3.jpg",
+		ImageURL:    "/images/sets/3.webp",
 		Description: "Go-to basics. This casual set works for everyday wear and endless styling options.",
 	},
 	{
@@ -545,7 +545,7 @@ var products = []Product{
 		Title:       "Business Set - Professional Pairing",
 		Price:       199,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/1.jpg",
+		ImageURL:    "/images/sets/1.webp",
 		Description: "Office ready. This professional set makes creating work outfits effortless.",
 	},
 	{
@@ -553,7 +553,7 @@ var products = []Product{
 		Title:       "Knit Set - Cozy Coordinates",
 		Price:       169,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/2.jpg",
+		ImageURL:    "/images/sets/2.webp",
 		Description: "Warm and comfortable. This knit set is perfect for cooler seasons.",
 	},
 	{
@@ -561,7 +561,7 @@ var products = []Product{
 		Title:       "Layered Set - Dimension and Style",
 		Price:       189,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/3.jpg",
+		ImageURL:    "/images/sets/3.webp",
 		Description: "Create dimension. This layered set offers styling versatility.",
 	},
 	{
@@ -569,7 +569,7 @@ var products = []Product{
 		Title:       "Weekend Set - Relaxed Vibes",
 		Price:       149,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/1.jpg",
+		ImageURL:    "/images/sets/1.webp",
 		Description: "Perfect for weekends. This casual set is comfortable and stylish.",
 	},
 	{
@@ -577,7 +577,7 @@ var products = []Product{
 		Title:       "Date Night Set - Elegant Pairing",
 		Price:       219,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/2.jpg",
+		ImageURL:    "/images/sets/2.webp",
 		Description: "Impress on date night. This elegant set makes a lasting impression.",
 	},
 	{
@@ -585,7 +585,7 @@ var products = []Product{
 		Title:       "Transitional Set - Seasonal Bridge",
 		Price:       159,
 		Category:    "Sets",
-		ImageURL:    "/images/sets/3.jpg",
+		ImageURL:    "/images/sets/3.webp",
 		Description: "Perfect for transitional seasons. This set bridges spring and fall beautifully.",
 	},
 }
