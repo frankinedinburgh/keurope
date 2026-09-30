@@ -7,7 +7,7 @@ interface ProductCardProps {
   isHighPriority: boolean;
 }
 
-export function ProductCard({ product, isLazy, isHighPriority }: ProductCardProps) {
+export function ProductCard({ product, isLazy=false, isHighPriority=false }: ProductCardProps) {
   return (
     <Link to={`/product/${product.id}`} className="group">
       <div className="aspect-[3/4] overflow-hidden bg-neutral-100 mb-4">

@@ -1,159 +1,168 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router';
-import { ArrowLeft, Edit2, Trash2, Plus } from 'lucide-react';
-import { useAdmin } from '../context/AdminContext';
-import { useToast } from '../context/ToastContext';
-import { productsAPI, Product } from '../services/api';
-import { API_BASE } from '../config/api';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react'
+import { useNavigate } from 'react-router'
+import { ArrowLeft, Edit2, Trash2, Plus } from 'lucide-react'
+import { useAdmin } from '../context/AdminContext'
+import { useToast } from '../context/ToastContext'
+import { productsAPI, Product } from '../services/api'
+import { API_BASE } from '../config/api'
 
-type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc';
+const AddEditProductDialog = lazy(() => import('../components/AddEditProductDialog'))
+
+type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc'
 
 export function AdminProducts() {
-  const navigate = useNavigate();
-  const { isAdmin, adminToken } = useAdmin();
-  const { success, error: showError } = useToast();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [formData, setFormData] = useState<Partial<Product>>({});
+  const navigate = useNavigate()
+  const { isAdmin, adminToken } = useAdmin()
+  const { success, error: showError } = useToast()
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [showAddForm, setShowAddForm] = useState(false)
+  const [formData, setFormData] = useState<Partial<Product>>({})
 
   // Search and filter state
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState<SortOption>('name-asc');
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [sortBy, setSortBy] = useState<SortOption>('name-asc')
 
   if (!isAdmin) {
-    navigate('/admin/login');
-    return null;
+    navigate('/admin/login')
+    return null
   }
 
   useEffect(() => {
-    loadProducts();
-  }, []);
+    loadProducts()
+  }, [])
 
   const loadProducts = async () => {
     try {
-      setLoading(true);
-      const data = await productsAPI.getAll();
-      setProducts(data);
+      setLoading(true)
+      const data = await productsAPI.getAll()
+      setProducts(data)
     } catch (err) {
-      showError('Failed to load products');
+      showError('Failed to load products')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const categories = useMemo(() => {
-    const cats = new Set(products.map(p => p.category));
-    return ['All', ...Array.from(cats)].sort();
-  }, [products]);
+    const cats = new Set(products.map((p) => p.category))
+    return ['All', ...Array.from(cats)].sort()
+  }, [products])
 
   const filteredAndSorted = useMemo(() => {
-    let filtered = products;
+    let filtered = products
 
     // Filter by search term
     if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(p => p.title.toLowerCase().includes(term));
+      const term = searchTerm.toLowerCase()
+      filtered = filtered.filter((p) => p.title.toLowerCase().includes(term))
     }
 
     // Filter by category
     if (selectedCategory !== 'All') {
-      filtered = filtered.filter(p => p.category === selectedCategory);
+      filtered = filtered.filter((p) => p.category === selectedCategory)
     }
 
     // Sort
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'name-asc':
-          return a.title.localeCompare(b.title);
+          return a.title.localeCompare(b.title)
         case 'name-desc':
-          return b.title.localeCompare(a.title);
+          return b.title.localeCompare(a.title)
         case 'price-asc':
-          return a.price - b.price;
+          return a.price - b.price
         case 'price-desc':
-          return b.price - a.price;
+          return b.price - a.price
         default:
-          return 0;
+          return 0
       }
-    });
+    })
 
-    return filtered;
-  }, [products, searchTerm, selectedCategory, sortBy]);
+    return filtered
+  }, [products, searchTerm, selectedCategory, sortBy])
 
   const handleEdit = (product: Product) => {
-    setEditingId(product.id);
-    setShowAddForm(false);
-    setFormData(product);
-  };
+    setEditingId(product.id)
+    setShowAddForm(false)
+    setFormData(product)
+  }
 
   const handleAddNew = () => {
-    setShowAddForm(true);
-    setEditingId(null);
-    setFormData({});
-  };
+    setShowAddForm(true)
+    setEditingId(null)
+    setFormData({})
+  }
+
+  const handleClose = () => {
+    setShowAddForm(false)
+    setEditingId(null)
+    setFormData({})
+  }
 
   const handleSave = async () => {
     if (!formData.title || !formData.price || !formData.category) {
-      showError('Please fill in all required fields');
-      return;
+      showError('Please fill in all required fields')
+      return
     }
 
     if (!editingId && !formData.image_url) {
-      showError('Please select an image');
-      return;
+      showError('Please select an image')
+      return
     }
 
     try {
-      const endpoint = editingId ? `${API_BASE}/admin/products/${editingId}` : `${API_BASE}/admin/products`;
-      const method = editingId ? 'PUT' : 'POST';
+      const endpoint = editingId
+        ? `${API_BASE}/admin/products/${editingId}`
+        : `${API_BASE}/admin/products`
+      const method = editingId ? 'PUT' : 'POST'
 
       const response = await fetch(endpoint, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${adminToken}`,
+          Authorization: `Bearer ${adminToken}`,
         },
         body: JSON.stringify(formData),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        throw new Error(`API error: ${response.status}`)
       }
 
-      success(editingId ? 'Product updated' : 'Product created');
-      setEditingId(null);
-      setShowAddForm(false);
-      setFormData({});
-      await loadProducts();
+      success(editingId ? 'Product updated' : 'Product created')
+      setEditingId(null)
+      setShowAddForm(false)
+      setFormData({})
+      await loadProducts()
     } catch (err) {
-      console.error('Save error:', err);
-      showError(editingId ? 'Failed to update product' : 'Failed to create product');
+      console.error('Save error:', err)
+      showError(editingId ? 'Failed to update product' : 'Failed to create product')
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure?')) return;
+    if (!confirm('Are you sure?')) return
     try {
       await fetch(`${API_BASE}/admin/products/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${adminToken}` },
-      });
-      success('Product deleted');
-      loadProducts();
+        headers: { Authorization: `Bearer ${adminToken}` },
+      })
+      success('Product deleted')
+      loadProducts()
     } catch (err) {
-      showError('Failed to delete product');
+      showError('Failed to delete product')
     }
-  };
+  }
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-neutral-600">Loading products...</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -172,101 +181,125 @@ export function AdminProducts() {
         </div>
       </header>
 
-      <Dialog open={showAddForm || !!editingId} onOpenChange={(open) => {
-        if (!open) {
-          setShowAddForm(false);
-          setEditingId(null);
-          setFormData({});
-        }
-      }}>
+      {(showAddForm || !!editingId) && (
+        <Suspense fallback={null}>
+          <AddEditProductDialog
+            isOpen={true}
+            editingId={editingId}
+            formData={formData}
+            categories={categories}
+            onFormChange={setFormData}
+            onClose={handleClose}
+            onSave={handleSave}
+          />
+        </Suspense>
+      )}
+
+      {/* <Dialog
+        open={showAddForm || !!editingId}
+        onOpenChange={(open) => {
+          if (!open) {
+            handleClose()
+          }
+        }}
+      >
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>{editingId ? 'Edit Product' : 'Add New Product'}</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Title *</label>
+              <input
+                type="text"
+                placeholder="Product title"
+                value={formData.title || ''}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Title *</label>
+                <label className="block text-sm font-medium mb-2">Price *</label>
                 <input
-                  type="text"
-                  placeholder="Product title"
-                  value={formData.title || ''}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  type="number"
+                  step="0.01"
+                  placeholder="Price"
+                  value={formData.price || ''}
+                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
                   className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black"
                 />
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Price *</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="Price"
-                    value={formData.price || ''}
-                    onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
-                    className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Category *</label>
-                  <select
-                    value={formData.category || ''}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black cursor-pointer"
-                  >
-                    <option value="">Select a category</option>
-                    {categories.map(cat => cat !== 'All' && (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
               <div>
-                <label className="block text-sm font-medium mb-2">Description</label>
-                <textarea
-                  placeholder="Product description"
-                  value={formData.description || ''}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black"
-                  rows={3}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Product Image *</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onload = () => {
-                        setFormData({ ...formData, image_url: reader.result as string });
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                  className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black"
-                />
-                {formData.image_url && (
-                  <img src={formData.image_url} alt="Preview" className="mt-4 h-40 object-cover rounded" />
-                )}
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <button
-                  onClick={handleSave}
-                  className="flex-1 bg-black text-white py-2 rounded hover:bg-neutral-800 font-medium"
+                <label className="block text-sm font-medium mb-2">Category *</label>
+                <select
+                  value={formData.category || ''}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black cursor-pointer"
                 >
-                  {editingId ? 'Update' : 'Create'}
-                </button>
+                  <option value="">Select a category</option>
+                  {categories.map(
+                    (cat) =>
+                      cat !== 'All' && (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      )
+                  )}
+                </select>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Description</label>
+              <textarea
+                placeholder="Product description"
+                value={formData.description || ''}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black"
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Product Image *</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    const reader = new FileReader()
+                    reader.onload = () => {
+                      setFormData({ ...formData, image_url: reader.result as string })
+                    }
+                    reader.readAsDataURL(file)
+                  }
+                }}
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black"
+              />
+              {formData.image_url && (
+                <img
+                  src={formData.image_url}
+                  alt="Preview"
+                  className="mt-4 h-40 object-cover rounded"
+                />
+              )}
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <button
+                onClick={handleSave}
+                className="flex-1 bg-black text-white py-2 rounded hover:bg-neutral-800 font-medium"
+              >
+                {editingId ? 'Update' : 'Create'}
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog> */}
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Action Buttons */}
@@ -306,8 +339,10 @@ export function AdminProducts() {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full px-3 py-2 border rounded focus:outline-none focus:border-black cursor-pointer"
               >
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
                 ))}
               </select>
             </div>
@@ -326,7 +361,9 @@ export function AdminProducts() {
             </div>
           </div>
 
-          <p className="text-sm text-neutral-600">Showing {filteredAndSorted.length} of {products.length} products</p>
+          <p className="text-sm text-neutral-600">
+            Showing {filteredAndSorted.length} of {products.length} products
+          </p>
         </div>
 
         {/* Products Table */}
@@ -348,9 +385,15 @@ export function AdminProducts() {
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-neutral-100 rounded flex-shrink-0 overflow-hidden">
                           {product.image_url ? (
-                            <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
+                            <img
+                              src={product.image_url}
+                              alt={product.title}
+                              className="w-full h-full object-cover"
+                            />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-xs text-neutral-400">No image</div>
+                            <div className="w-full h-full flex items-center justify-center text-xs text-neutral-400">
+                              No image
+                            </div>
                           )}
                         </div>
                         <div className="min-w-0">
@@ -393,5 +436,5 @@ export function AdminProducts() {
         </div>
       </main>
     </div>
-  );
+  )
 }

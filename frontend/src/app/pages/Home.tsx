@@ -29,6 +29,7 @@ export function Home() {
             src="https://images.unsplash.com/photo-1778757367899-db7c77e78b09?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxrb3JlYW4lMjBzdHJlZXQlMjBmYXNoaW9uJTIwd29tYW58ZW58MXx8fHwxNzgwNTkxMzYwfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
             alt="Hero"
             className="size-full object-cover"
+            fetchpriority='high'
           />
           <div className="absolute inset-0 bg-black/30" />
         </div>
@@ -68,7 +69,7 @@ export function Home() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} isLazy={true}/>
           ))}
         </div>
 
