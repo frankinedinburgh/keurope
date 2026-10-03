@@ -1,4 +1,4 @@
 ## Updated
 
 
-MVP eccommerce store built with React and Go
+MVP ecommerce store built with React and Go
