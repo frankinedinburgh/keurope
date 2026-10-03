@@ -33,6 +33,7 @@ func adminLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Printf("%s lives in %s.\n", os.Getenv("NAME"), os.Getenv("BURROW"))
 	adminPassword := os.Getenv("ADMIN_PASSWORD")
 	if adminPassword == "" {
 		adminPassword = "admin123" // Default for development
