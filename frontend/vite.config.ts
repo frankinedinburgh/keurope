@@ -1,9 +1,15 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import imagemin from 'vite-plugin-imagemin'
 import react from '@vitejs/plugin-react'
+import { fileURLToPath } from 'node:url'
+import { playwright } from '@vitest/browser-playwright'
+const dirname =
+  typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url))
 
+// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 function figmaAssetResolver() {
   return {
     name: 'figma-asset-resolver',
@@ -15,7 +21,6 @@ function figmaAssetResolver() {
     },
   }
 }
-
 export default defineConfig({
   server: {
     watch: {
@@ -29,12 +34,28 @@ export default defineConfig({
     react(),
     tailwindcss(),
     imagemin({
-      gifsicle: { optimizationLevel: 7 },
-      optipng: { optimizationLevel: 7 },
-      mozjpeg: { quality: 85 },
-      pngquant: { quality: [0.8, 0.9] },
-      svgo: { plugins: [{ name: 'removeViewBox' }] },
-      webp: { quality: 85 }, // ← WebP conversion!
+      gifsicle: {
+        optimizationLevel: 7,
+      },
+      optipng: {
+        optimizationLevel: 7,
+      },
+      mozjpeg: {
+        quality: 85,
+      },
+      pngquant: {
+        quality: [0.8, 0.9],
+      },
+      svgo: {
+        plugins: [
+          {
+            name: 'removeViewBox',
+          },
+        ],
+      },
+      webp: {
+        quality: 85,
+      }, // ← WebP conversion!
     }),
   ],
   resolve: {
@@ -52,7 +73,17 @@ export default defineConfig({
       },
     },
   },
-
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
+  test: {
+    projects: [
+      {
+        extends: true,
+        plugins: [
+          // The plugin will run tests for the stories defined in your Storybook config
+          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
+        ],
+      },
+    ],
+  },
 })

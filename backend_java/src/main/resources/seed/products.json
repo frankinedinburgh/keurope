@@ -1,0 +1,578 @@
+[
+  {
+    "id": "1",
+    "title": "Oversized Linen Blazer - Seoul Collection",
+    "price": 189,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/1.webp",
+    "description": "A modern take on the classic blazer. Crafted from premium linen, this oversized piece offers sophisticated elegance for every occasion. Perfect layering piece that transitions effortlessly from office to evening."
+  },
+  {
+    "id": "5",
+    "title": "Structured Wool Coat - Seoul Designer",
+    "price": 299,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/2.webp",
+    "description": "The ultimate investment piece. This structured wool coat combines Korean minimalism with European sophistication. Meticulously crafted from premium wool."
+  },
+  {
+    "id": "9",
+    "title": "Classic Trench Coat - Seoul Studio",
+    "price": 249,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/3.webp",
+    "description": "Timeless elegance meets modern design. This trench coat is the perfect canvas for any outfit, with refined tailoring and premium fabric that will last for years."
+  },
+  {
+    "id": "10",
+    "title": "Lightweight Denim Jacket - Korean Brand",
+    "price": 129,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/1.webp",
+    "description": "Versatile and effortless. This denim jacket adds the perfect touch to any wardrobe. Quality Korean craftsmanship ensures durability and comfort."
+  },
+  {
+    "id": "11",
+    "title": "Wool Blend Cardigan - Seoul Collection",
+    "price": 159,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/2.webp",
+    "description": "Layering perfection. This cardigan blends warmth with style, ideal for transitional seasons and versatile styling options."
+  },
+  {
+    "id": "12",
+    "title": "Formal Blazer Set - Designer Piece",
+    "price": 219,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/3.webp",
+    "description": "Professional and polished. Perfect for business meetings and formal occasions, this blazer exudes confidence and sophistication."
+  },
+  {
+    "id": "13",
+    "title": "Linen Blend Jacket - Summer Essential",
+    "price": 139,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/1.webp",
+    "description": "Breathable and elegant. Ideal for warmer months, this jacket offers style without the bulk."
+  },
+  {
+    "id": "14",
+    "title": "Cashmere Wrap - Luxury Collection",
+    "price": 279,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/2.webp",
+    "description": "Ultimate luxury. This cashmere wrap adds sophistication to any outfit while providing warmth and comfort."
+  },
+  {
+    "id": "15",
+    "title": "Oversized Coat - Street Style",
+    "price": 269,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/3.webp",
+    "description": "Fashion-forward and comfortable. This oversized coat is perfect for creating a statement look."
+  },
+  {
+    "id": "16",
+    "title": "Wool Peacoat - Classic Style",
+    "price": 229,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/1.webp",
+    "description": "A timeless classic. This peacoat never goes out of style and pairs with everything."
+  },
+  {
+    "id": "17",
+    "title": "Linen Shirt Jacket - Lightweight",
+    "price": 149,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/2.webp",
+    "description": "Perfect for layering. This shirt jacket offers style and functionality."
+  },
+  {
+    "id": "18",
+    "title": "Tailored Blazer - Office Essential",
+    "price": 199,
+    "category": "Outerwear",
+    "image_url": "/images/outerwear/3.webp",
+    "description": "Professional elegance. This blazer is a must-have for any modern woman's wardrobe."
+  },
+  {
+    "id": "2",
+    "title": "Premium Cotton Shirt - Seoul Designer",
+    "price": 79,
+    "category": "Tops",
+    "image_url": "/images/tops/1.webp",
+    "description": "Timeless simplicity with impeccable attention to detail. This pristine white shirt is a wardrobe essential."
+  },
+  {
+    "id": "19",
+    "title": "Silk Blouse - Elegant Design",
+    "price": 119,
+    "category": "Tops",
+    "image_url": "/images/tops/2.webp",
+    "description": "Luxurious and refined. This silk blouse elevates any look with its smooth drape and elegant design."
+  },
+  {
+    "id": "20",
+    "title": "Basic Tee - Pure White",
+    "price": 49,
+    "category": "Tops",
+    "image_url": "/images/tops/3.webp",
+    "description": "The foundation of every wardrobe. High-quality basics that work with everything."
+  },
+  {
+    "id": "21",
+    "title": "Linen Top - Breathable Comfort",
+    "price": 69,
+    "category": "Tops",
+    "image_url": "/images/tops/1.webp",
+    "description": "Perfect for warm weather. This linen top offers breathability and style."
+  },
+  {
+    "id": "22",
+    "title": "Striped Shirt - Classic Pattern",
+    "price": 89,
+    "category": "Tops",
+    "image_url": "/images/tops/2.webp",
+    "description": "Nautical elegance. This striped shirt is a versatile piece that works in any season."
+  },
+  {
+    "id": "23",
+    "title": "Oversized T-shirt - Comfort First",
+    "price": 59,
+    "category": "Tops",
+    "image_url": "/images/tops/3.webp",
+    "description": "Casual and comfortable. Perfect for everyday wear and relaxation."
+  },
+  {
+    "id": "24",
+    "title": "Fitted Turtleneck - Winter Essential",
+    "price": 99,
+    "category": "Tops",
+    "image_url": "/images/tops/1.webp",
+    "description": "Timeless and elegant. This turtleneck is perfect for layering and makes any outfit sophisticated."
+  },
+  {
+    "id": "25",
+    "title": "Button-Up Shirt - Work Ready",
+    "price": 109,
+    "category": "Tops",
+    "image_url": "/images/tops/2.webp",
+    "description": "Professional and polished. Perfect for the office and business settings."
+  },
+  {
+    "id": "26",
+    "title": "Long Sleeve Tee - Everyday Basic",
+    "price": 64,
+    "category": "Tops",
+    "image_url": "/images/tops/3.webp",
+    "description": "Versatile and reliable. A wardrobe staple you'll reach for constantly."
+  },
+  {
+    "id": "27",
+    "title": "Satin Blouse - Evening Elegance",
+    "price": 139,
+    "category": "Tops",
+    "image_url": "/images/tops/1.webp",
+    "description": "Sophisticated and luxurious. Perfect for evening events and special occasions."
+  },
+  {
+    "id": "28",
+    "title": "Cropped Top - Modern Cut",
+    "price": 74,
+    "category": "Tops",
+    "image_url": "/images/tops/2.webp",
+    "description": "Contemporary and stylish. This cropped top works beautifully with high-waisted bottoms."
+  },
+  {
+    "id": "29",
+    "title": "Henley Shirt - Casual Cool",
+    "price": 84,
+    "category": "Tops",
+    "image_url": "/images/tops/3.webp",
+    "description": "Laid-back style with an edge. Perfect for casual outings and weekends."
+  },
+  {
+    "id": "3",
+    "title": "Wide Leg Tailored Trousers - Seoul Studio",
+    "price": 129,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/1.webp",
+    "description": "Contemporary silhouette with exceptional tailoring. These wide-leg trousers flatter all body types."
+  },
+  {
+    "id": "30",
+    "title": "Slim Fit Jeans - Classic Denim",
+    "price": 99,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/2.webp",
+    "description": "Timeless fit. These jeans work with everything and improve with age."
+  },
+  {
+    "id": "31",
+    "title": "High Waisted Trousers - Modern Silhouette",
+    "price": 139,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/3.webp",
+    "description": "Flattering and elegant. The perfect high-waisted trouser for any occasion."
+  },
+  {
+    "id": "32",
+    "title": "Black Leggings - Essential Piece",
+    "price": 59,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/1.webp",
+    "description": "Versatile and comfortable. Every wardrobe needs quality black leggings."
+  },
+  {
+    "id": "33",
+    "title": "Straight Leg Jeans - Classic Style",
+    "price": 109,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/2.webp",
+    "description": "Never out of style. These straight-leg jeans are a timeless essential."
+  },
+  {
+    "id": "34",
+    "title": "Cropped Pants - Sophisticated Cut",
+    "price": 119,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/3.webp",
+    "description": "Perfect proportions. These cropped pants work beautifully with any top."
+  },
+  {
+    "id": "35",
+    "title": "Pleated Trousers - Elegant Detail",
+    "price": 149,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/1.webp",
+    "description": "Sophisticated tailoring. The pleats add visual interest and dimension."
+  },
+  {
+    "id": "36",
+    "title": "Flared Jeans - Retro Chic",
+    "price": 119,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/2.webp",
+    "description": "Fashion-forward and fun. These flared jeans bring retro vibes to modern styling."
+  },
+  {
+    "id": "37",
+    "title": "Tailored Shorts - Summer Ready",
+    "price": 84,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/3.webp",
+    "description": "Sophisticated shorts perfect for warm weather and casual elegance."
+  },
+  {
+    "id": "38",
+    "title": "Relaxed Fit Jeans - Comfortable Style",
+    "price": 104,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/1.webp",
+    "description": "Comfort meets style. These relaxed-fit jeans are perfect for everyday wear."
+  },
+  {
+    "id": "39",
+    "title": "Cigarette Pants - Sleek Fit",
+    "price": 129,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/2.webp",
+    "description": "Sleek and streamlined. Perfect for creating a polished silhouette."
+  },
+  {
+    "id": "40",
+    "title": "Bermuda Shorts - Classic Cut",
+    "price": 94,
+    "category": "Bottoms",
+    "image_url": "/images/bottoms/3.webp",
+    "description": "Timeless elegance. These shorts work from day to night."
+  },
+  {
+    "id": "4",
+    "title": "Cashmere Blend Sweater - Korean Knit",
+    "price": 149,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/1.webp",
+    "description": "Indulge in luxury with this cashmere blend knit. Soft, breathable, and designed to last."
+  },
+  {
+    "id": "41",
+    "title": "Wool Turtleneck - Winter Warmth",
+    "price": 129,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/2.webp",
+    "description": "Cozy and sophisticated. Perfect for cold weather layering."
+  },
+  {
+    "id": "42",
+    "title": "Cotton Knit Sweater - Breathable",
+    "price": 89,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/3.webp",
+    "description": "Light and versatile. Perfect for any season and any occasion."
+  },
+  {
+    "id": "43",
+    "title": "Merino Wool Sweater - Premium Quality",
+    "price": 159,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/1.webp",
+    "description": "Exceptional softness. Merino wool offers superior comfort and durability."
+  },
+  {
+    "id": "44",
+    "title": "Chunky Knit Cardigan - Cozy Style",
+    "price": 139,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/2.webp",
+    "description": "Warm and inviting. This chunky knit is perfect for creating comfort and style."
+  },
+  {
+    "id": "45",
+    "title": "V-Neck Sweater - Versatile Basic",
+    "price": 99,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/3.webp",
+    "description": "Classic and flattering. A V-neck sweater works with everything in your wardrobe."
+  },
+  {
+    "id": "46",
+    "title": "Cable Knit Sweater - Textured Detail",
+    "price": 119,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/1.webp",
+    "description": "Sophisticated texture. The cable knit adds visual interest and dimension."
+  },
+  {
+    "id": "47",
+    "title": "Crew Neck Sweater - Essential Piece",
+    "price": 94,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/2.webp",
+    "description": "A wardrobe staple. This crew neck sweater is reliable and timeless."
+  },
+  {
+    "id": "48",
+    "title": "Lightweight Cardigan - Perfect Layer",
+    "price": 109,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/3.webp",
+    "description": "Versatile layering piece. Perfect for creating dimension in any outfit."
+  },
+  {
+    "id": "49",
+    "title": "Alpaca Blend Sweater - Ultra Soft",
+    "price": 179,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/1.webp",
+    "description": "Incredibly soft and luxurious. Alpaca blend offers unmatched comfort."
+  },
+  {
+    "id": "50",
+    "title": "Mock Neck Sweater - Modern Style",
+    "price": 104,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/2.webp",
+    "description": "Contemporary silhouette. This mock neck offers sophistication and comfort."
+  },
+  {
+    "id": "51",
+    "title": "Wrap Cardigan - Flattering Cut",
+    "price": 129,
+    "category": "Knitwear",
+    "image_url": "/images/knitwear/3.webp",
+    "description": "Beautifully flattering. The wrap style is perfect for any body type."
+  },
+  {
+    "id": "7",
+    "title": "Elegant Midi Dress - Korean Designer",
+    "price": 169,
+    "category": "Dresses",
+    "image_url": "/images/dresses/1.webp",
+    "description": "Sophistication defined. This midi dress captures the essence of Korean minimalist design."
+  },
+  {
+    "id": "52",
+    "title": "Classic Shift Dress - Timeless Style",
+    "price": 139,
+    "category": "Dresses",
+    "image_url": "/images/dresses/2.webp",
+    "description": "Simple elegance. This shift dress works from office to evening."
+  },
+  {
+    "id": "53",
+    "title": "Wrap Dress - Flattering Silhouette",
+    "price": 159,
+    "category": "Dresses",
+    "image_url": "/images/dresses/3.webp",
+    "description": "Universally flattering. The wrap style emphasizes curves beautifully."
+  },
+  {
+    "id": "54",
+    "title": "A-Line Dress - Feminine Cut",
+    "price": 149,
+    "category": "Dresses",
+    "image_url": "/images/dresses/1.webp",
+    "description": "Soft and feminine. This A-line dress is perfect for any occasion."
+  },
+  {
+    "id": "55",
+    "title": "Bodycon Dress - Sleek Fit",
+    "price": 129,
+    "category": "Dresses",
+    "image_url": "/images/dresses/2.webp",
+    "description": "Confident and bold. This bodycon dress makes a statement."
+  },
+  {
+    "id": "56",
+    "title": "Maxi Dress - Floor Length Elegance",
+    "price": 189,
+    "category": "Dresses",
+    "image_url": "/images/dresses/3.webp",
+    "description": "Sophisticated elegance. Perfect for formal occasions and evening events."
+  },
+  {
+    "id": "57",
+    "title": "Cocktail Dress - Evening Essential",
+    "price": 179,
+    "category": "Dresses",
+    "image_url": "/images/dresses/1.webp",
+    "description": "Chic and sophisticated. Perfect for cocktail events and parties."
+  },
+  {
+    "id": "58",
+    "title": "Shirt Dress - Casual Elegance",
+    "price": 119,
+    "category": "Dresses",
+    "image_url": "/images/dresses/2.webp",
+    "description": "Versatile and chic. This shirt dress works as a dress or as a layering piece."
+  },
+  {
+    "id": "59",
+    "title": "Pencil Dress - Sleek Silhouette",
+    "price": 144,
+    "category": "Dresses",
+    "image_url": "/images/dresses/3.webp",
+    "description": "Professional and polished. Perfect for the office and business meetings."
+  },
+  {
+    "id": "60",
+    "title": "Fit and Flare Dress - Playful Style",
+    "price": 154,
+    "category": "Dresses",
+    "image_url": "/images/dresses/1.webp",
+    "description": "Fun and feminine. This fit and flare dress celebrates the female form."
+  },
+  {
+    "id": "61",
+    "title": "Slip Dress - Minimalist Elegance",
+    "price": 124,
+    "category": "Dresses",
+    "image_url": "/images/dresses/2.webp",
+    "description": "Effortlessly chic. Perfect for layering or wearing as a standalone piece."
+  },
+  {
+    "id": "62",
+    "title": "Patterned Dress - Statement Piece",
+    "price": 164,
+    "category": "Dresses",
+    "image_url": "/images/dresses/3.webp",
+    "description": "Bold and beautiful. This patterned dress makes a fashion statement."
+  },
+  {
+    "id": "6",
+    "title": "Coordinated Ensemble Set - Seoul Contemporary",
+    "price": 159,
+    "category": "Sets",
+    "image_url": "/images/sets/1.webp",
+    "description": "Take the guesswork out of styling with this thoughtfully coordinated set."
+  },
+  {
+    "id": "8",
+    "title": "Contemporary Outfit Set - Seoul Studio",
+    "price": 199,
+    "category": "Sets",
+    "image_url": "/images/sets/2.webp",
+    "description": "Two pieces, endless possibilities. This contemporary set offers maximum versatility."
+  },
+  {
+    "id": "63",
+    "title": "Classic Matching Set - Timeless Pairing",
+    "price": 179,
+    "category": "Sets",
+    "image_url": "/images/sets/3.webp",
+    "description": "Effortless coordination. This matching set takes the stress out of getting dressed."
+  },
+  {
+    "id": "64",
+    "title": "Lounge Set - Comfort and Style",
+    "price": 139,
+    "category": "Sets",
+    "image_url": "/images/sets/1.webp",
+    "description": "Cozy yet chic. This lounge set is perfect for relaxed weekends at home."
+  },
+  {
+    "id": "65",
+    "title": "Formal Two-Piece Set - Evening Ready",
+    "price": 229,
+    "category": "Sets",
+    "image_url": "/images/sets/2.webp",
+    "description": "Sophisticated pairing. Perfect for formal events and special occasions."
+  },
+  {
+    "id": "66",
+    "title": "Casual Pair Set - Everyday Essential",
+    "price": 129,
+    "category": "Sets",
+    "image_url": "/images/sets/3.webp",
+    "description": "Go-to basics. This casual set works for everyday wear and endless styling options."
+  },
+  {
+    "id": "67",
+    "title": "Business Set - Professional Pairing",
+    "price": 199,
+    "category": "Sets",
+    "image_url": "/images/sets/1.webp",
+    "description": "Office ready. This professional set makes creating work outfits effortless."
+  },
+  {
+    "id": "68",
+    "title": "Knit Set - Cozy Coordinates",
+    "price": 169,
+    "category": "Sets",
+    "image_url": "/images/sets/2.webp",
+    "description": "Warm and comfortable. This knit set is perfect for cooler seasons."
+  },
+  {
+    "id": "69",
+    "title": "Layered Set - Dimension and Style",
+    "price": 189,
+    "category": "Sets",
+    "image_url": "/images/sets/3.webp",
+    "description": "Create dimension. This layered set offers styling versatility."
+  },
+  {
+    "id": "70",
+    "title": "Weekend Set - Relaxed Vibes",
+    "price": 149,
+    "category": "Sets",
+    "image_url": "/images/sets/1.webp",
+    "description": "Perfect for weekends. This casual set is comfortable and stylish."
+  },
+  {
+    "id": "71",
+    "title": "Date Night Set - Elegant Pairing",
+    "price": 219,
+    "category": "Sets",
+    "image_url": "/images/sets/2.webp",
+    "description": "Impress on date night. This elegant set makes a lasting impression."
+  },
+  {
+    "id": "72",
+    "title": "Transitional Set - Seasonal Bridge",
+    "price": 159,
+    "category": "Sets",
+    "image_url": "/images/sets/3.webp",
+    "description": "Perfect for transitional seasons. This set bridges spring and fall beautifully."
+  }
+]

@@ -7,7 +7,9 @@
     "build": "vite build",
     "dev": "vite",
     "preview": "vite preview",
-    "convert": "for file in *.jpg; do convert \"$file\" -quality 85 \"${file%.jpg}.webp\"; done"
+    "convert": "for file in *.jpg; do convert \"$file\" -quality 85 \"${file%.jpg}.webp\"; done",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -67,11 +69,20 @@
     "vaul": "1.1.2"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "^10.6.1",
+    "@storybook/addon-docs": "^10.6.1",
+    "@storybook/react-vite": "^10.6.1",
     "@tailwindcss/vite": "4.1.12",
     "@vitejs/plugin-react": "4.7.0",
+    "@vitest/browser-playwright": "latest",
+    "@vitest/coverage-v8": "latest",
+    "playwright": "latest",
+    "prop-types": "latest",
+    "storybook": "^10.6.1",
     "tailwindcss": "4.1.12",
     "vite": "6.3.5",
-    "vite-plugin-imagemin": "^0.6.1"
+    "vite-plugin-imagemin": "^0.6.1",
+    "vitest": "latest"
   },
   "peerDependencies": {
     "react": "18.3.1",

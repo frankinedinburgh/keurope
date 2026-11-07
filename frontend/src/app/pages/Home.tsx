@@ -1,24 +1,40 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router';
-import { ArrowRight } from 'lucide-react';
-import { ProductCard } from '../components/ProductCard';
-import { getProducts } from '../services/api';
+import { ComponentProps, useState, useEffect } from 'react'
+import { Link } from 'react-router'
+import { ArrowRight } from 'lucide-react'
+import { ProductCard } from '../components/ProductCard'
+import { getProducts } from '../services/api'
+import { Button } from '../components/ui/button'
+import { cn } from '../components/ui/utils'
+
+function IconLink({ className, children, ...rest }: ComponentProps<'a'>) {
+  return (
+    <a
+      className={cn(
+        'inline-flex items-center gap-2 bg-white text-black px-8 py-3 hover:bg-neutral-100 transition-colors font-medium',
+        className
+      )}
+      {...rest}
+    >
+      {children}
+    </a>
+  )
+}
 
 export function Home() {
-  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([])
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await getProducts();
-        setFeaturedProducts(data.slice(0, 4));
+        const data = await getProducts()
+        setFeaturedProducts(data.slice(0, 4))
       } catch (err) {
-        console.error('Failed to load featured products:', err);
+        console.error('Failed to load featured products:', err)
       }
-    };
+    }
 
-    fetchProducts();
-  }, []);
+    fetchProducts()
+  }, [])
 
   return (
     <div className="min-h-screen">
@@ -29,25 +45,33 @@ export function Home() {
             src="https://images.unsplash.com/photo-1778757367899-db7c77e78b09?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxrb3JlYW4lMjBzdHJlZXQlMjBmYXNoaW9uJTIwd29tYW58ZW58MXx8fHwxNzgwNTkxMzYwfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
             alt="Hero"
             className="size-full object-cover"
-            fetchpriority='high'
+            fetchpriority="high"
           />
           <div className="absolute inset-0 bg-black/30" />
         </div>
-        
+
         <div className="relative z-10 text-center text-white px-4">
           <h1 className="text-5xl md:text-7xl mb-6 tracking-tight">
-            Authentic Korean Fashion<br />For The Discerning Woman
+            Authentic Korean Fashion
+            <br />
+            For The Discerning Woman
           </h1>
           <p className="text-lg md:text-xl mb-8 text-white/90">
             Handpicked designer collections from Seoul, curated for European elegance
           </p>
-          <Link
+          <Button asChild variant="secondary" size="lg">
+            <IconLink href="/shop">
+              Explore Collection
+              <ArrowRight className="size-4" />
+            </IconLink>
+          </Button>
+          {/* <Link
             to="/shop"
             className="inline-flex items-center gap-2 bg-white text-black px-8 py-3 hover:bg-neutral-100 transition-colors font-medium"
           >
             Explore Collection
             <ArrowRight className="size-4" />
-          </Link>
+          </Link> */}
         </div>
       </section>
 
@@ -69,7 +93,7 @@ export function Home() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} isLazy={true}/>
+            <ProductCard key={product.id} product={product} isLazy={true} />
           ))}
         </div>
 
@@ -89,13 +113,11 @@ export function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl mb-6">
-                Direct From Seoul To Your Wardrobe
-              </h2>
+              <h2 className="text-3xl md:text-4xl mb-6">Direct From Seoul To Your Wardrobe</h2>
               <p className="text-neutral-600 mb-6">
-                K-Europe was founded by someone with deep roots in Korean fashion and a passion for European style.
-                We work directly with independent Korean designers to bring you pieces that embody Seoul's
-                minimalist elegance and impeccable craftsmanship.
+                K-Europe was founded by someone with deep roots in Korean fashion and a passion for
+                European style. We work directly with independent Korean designers to bring you
+                pieces that embody Seoul's minimalist elegance and impeccable craftsmanship.
               </p>
               <p className="text-neutral-600 mb-8">
                 Every item in our collection is personally curated for women who value quality,
@@ -142,12 +164,12 @@ export function Home() {
           <div>
             <h3 className="text-xl mb-4 font-medium">Curated for You</h3>
             <p className="text-neutral-600">
-              Every collection is thoughtfully selected for women who appreciate elegance,
-              quality, and pieces that transcend seasonal trends.
+              Every collection is thoughtfully selected for women who appreciate elegance, quality,
+              and pieces that transcend seasonal trends.
             </p>
           </div>
         </div>
       </section>
     </div>
-  );
+  )
 }
